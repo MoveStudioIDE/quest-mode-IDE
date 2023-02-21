@@ -121,8 +121,7 @@ export async function compile(project: Project): Promise<CompileReturn> {
     const compiledModules = fs.readFileSync(`${tempProjectPath}/build/${project.package}/bytecode_modules/${bytecodeFile}`, "base64");
 
     // Remove the temporary project directory
-    // NOTE: uncomment this line when done debugging
-    // fs.rmdirSync(tempProjectPath, { recursive: true });
+    fs.rmdirSync(tempProjectPath, { recursive: true });
 
     return {
       compiledModules: compiledModules as unknown as string[],
@@ -137,8 +136,7 @@ export async function compile(project: Project): Promise<CompileReturn> {
     // Check error message for update needed message - TODO
 
     // Remove the temporary project directory
-    // NOTE: uncomment this line when done debugging
-    // fs.rmdirSync(tempProjectPath, { recursive: true });
+    fs.rmdirSync(tempProjectPath, { recursive: true });
     
     return {
       compiledModules: [],
