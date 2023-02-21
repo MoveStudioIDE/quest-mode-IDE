@@ -217,10 +217,10 @@ function BuildCanvas(
     })
 
     // monaco.editor.defineTheme('Dracula', editorThemeJsons['Dracula'] as monaco.editor.IStandaloneThemeData);
-    // monaco.editor.setTheme(editorTheme[props.theme]);
+    monaco.editor.setTheme("GitHubDark");
     // console.log('theme', props.theme)
     // console.log('editorTheme', editorTheme[props.theme])
-  }, );
+  }, [monaco]);
 
 
   const handleEditorChange = (value: any) => {
