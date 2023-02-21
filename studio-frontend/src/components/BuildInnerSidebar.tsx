@@ -27,13 +27,21 @@ function BuildInnerSidebar(
           props.addActiveModules(module.name)
         }}
       >
-        <td className="">
+        <td className="pr-0">
+          <label 
+            tabIndex={0} 
+            className="text-info" 
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="arcs"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"/></svg>
+          </label>
+        </td>
+        <td className="pl-0">
           <p 
             className="ml-1 font-mono text-xs w-52 whitespace-normal break-words"
           >
             {/* TODO: Eventually get this to work with wrapping, not truncating */}
             {/* {shortenWord(module.name, 17)}{module.name.length < 18 ? ".move" : ""} */}
-            {module.name}
+            {module.name}.move
           </p>
         </td>
       </tr>
