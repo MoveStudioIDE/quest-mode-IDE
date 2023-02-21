@@ -308,11 +308,15 @@ function BuildPage(props: {
     console.log("currentProject", currentProject);
 
     axios.post(`${BACKEND_URL}compile`, currentProject).then((res) => {
-      const compileResults = res.data as string | string[];
+      const compileResults = res.data as {
+        compiledModules: string[];
+        errorCode: string;
+        error: boolean;
+      };
       console.log('res', compileResults);
-      if (typeof compileResults === 'string') {
+      if (compileResults.error) {
         setCompiledModules([]);
-        setCompileError(compileResults);
+        setCompileError(compileResults.errorCode);
 
         setToast(
           <div className="alert alert-error">
@@ -357,7 +361,7 @@ function BuildPage(props: {
       </div>
       )
 
-      setCompiledModules(compileResults);
+      setCompiledModules(compileResults.compiledModules);
       setCompileError('');
     });
   }

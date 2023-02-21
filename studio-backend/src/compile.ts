@@ -84,12 +84,16 @@ export async function compile(project: Project): Promise<CompileReturn> {
   });
 
   // NOTE: remove line in addresses once it is a default dependency in the FE
+  // NOTE: I replaced the two dependencies with the ones used in the overmind repo 
+  //        This was the old one: AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
+
   const toml = `
     [package]
     name = "${project.package}"
     version = "0.0.1"
     [dependencies]
-    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
+    MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
+    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
     [addresses]
     ${addresses}
   `;
@@ -117,7 +121,8 @@ export async function compile(project: Project): Promise<CompileReturn> {
     const compiledModules = fs.readFileSync(`${tempProjectPath}/build/${project.package}/bytecode_modules/${bytecodeFile}`, "base64");
 
     // Remove the temporary project directory
-    fs.rmdirSync(tempProjectPath, { recursive: true });
+    // NOTE: uncomment this line when done debugging
+    // fs.rmdirSync(tempProjectPath, { recursive: true });
 
     return {
       compiledModules: compiledModules as unknown as string[],
@@ -132,7 +137,8 @@ export async function compile(project: Project): Promise<CompileReturn> {
     // Check error message for update needed message - TODO
 
     // Remove the temporary project directory
-    fs.rmdirSync(tempProjectPath, { recursive: true });
+    // NOTE: uncomment this line when done debugging
+    // fs.rmdirSync(tempProjectPath, { recursive: true });
     
     return {
       compiledModules: [],
