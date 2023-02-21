@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "./BuildCanvas.css";
-import CodeEditorWindow from "./Editor";
 import Editor, {useMonaco} from "@monaco-editor/react";
 import * as monaco from 'monaco-editor';
 import { Module, Project } from "../types/project-types";
@@ -49,7 +48,6 @@ function BuildCanvas(
     code: string,
     currentProject: Project | null,
     currentModule: string | null,
-    theme: string,
     compiledModules: string[],
     compileError: string,
     testResults: string,
@@ -58,11 +56,12 @@ function BuildCanvas(
     activeModules: string[],
     removeActiveModule: (module: string) => void,
     toast: JSX.Element | undefined,
+
     // tutorialSteps:  any[],
-    runTutorial: boolean,
-    setRunTutorial: (runTutorial: boolean) => void,
-    stepIndex: number,
-    setStepIndex: (stepIndex: number) => void,
+    // runTutorial: boolean,
+    // setRunTutorial: (runTutorial: boolean) => void,
+    // stepIndex: number,
+    // setStepIndex: (stepIndex: number) => void,
     // tutorialCallback: (data: any) => void,
     setShowError: (showError: boolean) => void,
     setShowTestResults: (showTestResults: boolean) => void,
@@ -72,11 +71,11 @@ function BuildCanvas(
   }
 ) {
 
-  useEffect(() => {
-    if (props.runTutorial && props.stepIndex === 9) {
-      props.setStepIndex(10)
-    }
-  }, [props.compiledModules, props.compileError])
+  // useEffect(() => {
+  //   if (props.runTutorial && props.stepIndex === 9) {
+  //     props.setStepIndex(10)
+  //   }
+  // }, [props.compiledModules, props.compileError])
 
   
   // const [editorThemeTemp, setEditorTheme] = useState("vs-dark");
@@ -221,7 +220,7 @@ function BuildCanvas(
     // monaco.editor.setTheme(editorTheme[props.theme]);
     // console.log('theme', props.theme)
     // console.log('editorTheme', editorTheme[props.theme])
-  }, [props.theme, monaco]);
+  }, );
 
 
   const handleEditorChange = (value: any) => {
@@ -274,7 +273,7 @@ function BuildCanvas(
             language="sui-move"
             value={props.code}
             onChange={handleEditorChange}
-            theme={editorTheme[props.theme]}
+            theme='GitHubDark'
             className="step5"
           />
           {
