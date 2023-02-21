@@ -1,9 +1,11 @@
-import { JsonRpcProvider, Ed25519Keypair, RawSigner } from '@mysten/sui.js';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { Project } from './schema/user-schema';
 import dotenv from 'dotenv';
+import axios from 'axios';
 // import stripAnsi from 'strip-ansi';
+
+
 
 const TEMP_DIR = `${__dirname}/../temp-packages`;
 
@@ -25,10 +27,41 @@ const TEMP_DIR = `${__dirname}/../temp-packages`;
 //   ],
 // };
 
-export async function compile(project: Project): Promise<string | string[]> {
+type CompileReturn = {
+  compiledModules: string[];
+  errorCode: string;
+  error: boolean;
+}
+
+type TestReturn = {
+  result: string;
+  errorCode: string;
+  error: boolean;
+}
+
+type SubmitReturn = {
+  user: string;
+  result: string;
+  errorCode: string;
+  error: boolean;
+}
+
+function makeRandString(length: number) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
+export async function compile(project: Project): Promise<CompileReturn> {
 
   // Created temporary project in user directory
-  const tempProjectPath = `${TEMP_DIR}/${project.package}`;
+  const tempProjectPath = `${TEMP_DIR}/${project.package+makeRandString(20)}`;
 
   // console.log(tempProjectPath)
 
@@ -55,10 +88,8 @@ export async function compile(project: Project): Promise<string | string[]> {
     [package]
     name = "${project.package}"
     version = "0.0.1"
-
     [dependencies]
-    Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework", rev = "devnet" }
-
+    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
     [addresses]
     ${addresses}
   `;
@@ -70,18 +101,29 @@ export async function compile(project: Project): Promise<string | string[]> {
 
   // Compile the project
   try {
-    const compiledModules = execSync(
-      `sui move build --dump-bytecode-as-base64 --path ${tempProjectPath}`,
+    execSync(
+      `aptos move compile --package-dir ${tempProjectPath}`,
       { encoding: 'utf-8'}
     );
 
-    console.log("compiledModules", compiledModules);
+    const buildDirfiles = fs.readdirSync(`${tempProjectPath}/build/${project.package}/bytecode_modules/`);
+    let bytecodeFile;
+    for(const file of buildDirfiles){
+      if(file.endsWith(".mv")){
+        bytecodeFile = file
+      }
+    }
+
+    const compiledModules = fs.readFileSync(`${tempProjectPath}/build/${project.package}/bytecode_modules/${bytecodeFile}`, "base64");
 
     // Remove the temporary project directory
     fs.rmdirSync(tempProjectPath, { recursive: true });
 
-
-    return compiledModules as unknown as string[];
+    return {
+      compiledModules: compiledModules as unknown as string[],
+      errorCode: "",
+      error: false
+    }
 
   } catch (error: any) {
     console.log('error', error)
@@ -92,15 +134,17 @@ export async function compile(project: Project): Promise<string | string[]> {
     // Remove the temporary project directory
     fs.rmdirSync(tempProjectPath, { recursive: true });
     
-
-    return errorMessage as string;
+    return {
+      compiledModules: [],
+      errorCode: errorMessage,
+      error: true
+    }
   }
 }
 
-export async function test(project: Project) {
-
-  // Created temporary project in user directory
-  const tempProjectPath = `${TEMP_DIR}/${project.package}`;
+export async function testPackage(project: Project): Promise<TestReturn> {
+// Created temporary project in user directory
+  const tempProjectPath = `${TEMP_DIR}/${project.package+makeRandString(20)}`;
 
   // console.log(tempProjectPath)
 
@@ -127,10 +171,8 @@ export async function test(project: Project) {
     [package]
     name = "${project.package}"
     version = "0.0.1"
-
     [dependencies]
-    Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework", rev = "devnet" }
-
+    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
     [addresses]
     ${addresses}
   `;
@@ -143,91 +185,61 @@ export async function test(project: Project) {
   // Compile the project
   try {
     const test = execSync(
-      `sui move test --path ${tempProjectPath}`,
+      `aptos move test --package-dir ${tempProjectPath}`,
       { encoding: 'utf-8'}
     );
 
-    // console.log("test", test);
-
     // Find the index of the unit test results
-    const testResultsIndex = test.search("Running Move unit tests");
+    const testResultsIndex = test.search(`Running Move unit tests`);
 
     // Get the unit test results
     const testResults = test.slice(testResultsIndex);
 
-    console.log("testResults", testResults);
-
-    // console.log("compiledModules", compiledModules);
-
     // Remove the temporary project directory
     fs.rmdirSync(tempProjectPath, { recursive: true });
 
+    return {
+      result: testResults,
+      errorCode: "",
+      error: false
+    };
 
-    return testResults;
+  } catch (error: any) { // Error is caught if compile or tests fail
 
-  } catch (error: any) {
-    // console.log('error', error)
     const errorMessage = error.stdout;
-    // console.log("errorMessage", errorMessage)
-
-    const testResultsIndex = errorMessage.search("Running Move unit tests");
-
-    // Get the unit test results
-    const testResults = errorMessage.slice(testResultsIndex)
-    
-    console.log("testResults", testResults)
-
-    // Check error message for update needed message - TODO
 
     // Remove the temporary project directory
     fs.rmdirSync(tempProjectPath, { recursive: true });
     
 
-    return testResults as string;
+    return {
+      result: "",
+      errorCode: errorMessage,
+      error: true
+    };
 
   }
 }
 
-export async function publish (compiledModules: string[]) {
-  dotenv.config();
-  if (process.env.RECOVERY_PHRASE === undefined) {
-    throw new Error('RECOVERY_PHRASE is not defined');
+export async function submit(project: Project, user: string, callback: string): Promise<SubmitReturn>{
+  const result = await testPackage(project);
+  if(result.error){
+    console.log("Error")
+    return{
+      user: user,
+      ...result
+    }
   }
-  // connect to local RPC server
-  const provider = new JsonRpcProvider();
-  const keyPair = Ed25519Keypair.deriveKeypair(process.env.RECOVERY_PHRASE)
-  const signer = new RawSigner(keyPair, provider);
-  // await provider.requestSuiFromFaucet(
-  //   await signer.getAddress()
-  // );
-  console.log(`Signer address: ${await signer.getAddress()}`);
 
-  // publish the compiled modules
-
-  try {
-    // const publishTxn = await signer.publish({
-    //   compiledModules: compiledModules,
-    //   gasBudget: 10000,
-    // });
-    // console.log(publishTxn)
-
-    const publishTxn = await signer.signAndExecuteTransaction({
-      kind: 'publish',
-      data: {
-        compiledModules: compiledModules,
-        gasBudget: 10000
-      },
-    });
-
-    console.log(publishTxn);
-
-    return publishTxn;  
-  } catch (error: any) {
-    console.log(error);
+  try{
+    const res = await axios.get(callback+`?user=${user}`);
+  }
+  catch(error: any){
+    console.error(error)
   }
   
-
+  return {
+    user,
+    ...result
+  }
 }
-
-
-
