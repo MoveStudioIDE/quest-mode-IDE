@@ -30,7 +30,7 @@ const puzzles = {
     package: 'overmind',
     modules: [
       {
-        name: 'birthday.move',
+        name: 'birthday_bot',
         code: `module overmind::birthday_bot {
     use aptos_std::table::Table;
     use std::signer;
@@ -218,8 +218,8 @@ function BuildPage(props: {
         await indexedDb.putValue('projects', {
           package: puzzleData.package,
           dependencies: [
-            {name: props.projectName, address: '0x0'},
-            {name: 'Sui', address: '0x02'}
+            {name: puzzleData.package, address: '0x0'},
+            {name: 'std', address: '0x1'}
           ],
           modules: puzzleData.modules,
         }); 
@@ -228,10 +228,13 @@ function BuildPage(props: {
     }
     startIndexDb().then(() => {
       getProjects();
-      handleProjectChange(props.projectName); 
 
       // Get puzzle data from backend
       const puzzleData = puzzles[props.projectName];
+
+      handleProjectChange(puzzleData.package); 
+
+      
       setTitle(puzzleData.title);
       setObjective(puzzleData.objective);
       setInstructions(puzzleData.instructions);
@@ -302,6 +305,7 @@ function BuildPage(props: {
     }
 
     console.log('compiling with backend: ', BACKEND_URL);
+    console.log("currentProject", currentProject);
 
     axios.post(`${BACKEND_URL}compile`, currentProject).then((res) => {
       const compileResults = res.data as string | string[];
