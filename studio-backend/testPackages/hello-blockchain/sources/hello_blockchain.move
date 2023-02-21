@@ -51,7 +51,7 @@ module hello_blockchain::message {
         set_message(account,  string::utf8(b"Hello, Blockchain"));
 
         assert!(
-          get_message(addr) != string::utf8(b"Hello, Blockchain"),
+          get_message(addr) == string::utf8(b"Hello, Blockchain"),
           ENO_MESSAGE
         );
     }

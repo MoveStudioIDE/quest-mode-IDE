@@ -1,7 +1,6 @@
 import cors from 'cors';
 import express from 'express';
-import { compile, publish, test } from './compile';
-import { getObjectDetails, getPackageDetails } from './object-details';
+import { compile, testPackage } from './compile';
 
 const app = express();
 const portHttp = 80;
@@ -68,54 +67,12 @@ app.post('/test', async (req, res) => {
   console.log('testing project...')
 
   // Call compile function
-  const testResults = await test(project);
+  const testResults = await testPackage(project);
 
   // console.log(compileResult)
 
   res.send(testResults);
 
-});
-
-app.post('/publish', async (req, res) => {
-  const compiledModules = req.body.compiledModules;
-
-  // console.log(compiledModules);
-  console.log('publishing modules...')
-
-  // Call compile function
-  const compileResult = await publish(compiledModules);
-
-  res.send(compileResult);
-
-});
-
-app.post('/object-details', async (req, res) => {
-  const objectId = req.body.objectId as string;
-  const rpc = req.body.rpc as string;
-
-  console.log('Retrieving object details for: ' + objectId)
-
-  // console.log(objectId);
-
-  const objectDetails = await getObjectDetails(objectId, rpc);
-
-  // console.log(objectDetails);
-
-  res.send(objectDetails);
-});
-
-app.post('/package-details', async (req, res) => {
-  const packageId = req.body.packageId as string;
-  const rpc = req.body.rpc as string;
-
-  // console.log(packageId);
-  console.log('Retrieving package details for: ' + packageId)
-
-  const packageDetails = await getPackageDetails(packageId, rpc);
-
-  // console.log(packageDetails);
-
-  res.send(packageDetails);
 });
 
 app.listen(process.env.PORT || portHttp, () => {
