@@ -56,7 +56,7 @@ function BuildInnerSidebar(
       <div className="card w-full shadow-xl card-compact ">
         <div className="card-body -mt-3 ">
           
-          <div className="card w-full  overflow-y-auto">
+          <div className="card w-full max-h-60 overflow-y-auto">
             <div className="card-body">
               <div className="flex justify-start content-center items-center">
                 <h2 className="card-title">Puzzle: </h2>
