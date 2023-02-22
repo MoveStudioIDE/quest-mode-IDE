@@ -211,7 +211,8 @@ export async function testPackage(project: Project): Promise<TestReturn> {
 
   } catch (error: any) { // Error is caught if compile or tests fail
 
-    const errorMessage = error.stdout;
+    const errorMessageToIgnore = error.stdout;
+    const errorMessage = error.stderr.replace(errorMessageToIgnore, '');
 
     // Remove the temporary project directory
     fs.rmdirSync(tempProjectPath, { recursive: true });
