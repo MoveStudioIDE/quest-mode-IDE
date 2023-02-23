@@ -5,27 +5,16 @@ import dotenv from 'dotenv';
 import axios from 'axios';
 // import stripAnsi from 'strip-ansi';
 
+const MOCK_TEST_MODULE = `module overmind::birthday_bot_test {
 
+  #[test]
+  fun test() {
+    
+  }
+}`
 
 const TEMP_DIR = `${__dirname}/../temp-packages`;
 
-// const exampleModule = fs.readFileSync(`${__dirname}/example.move`, 'utf8');
-
-// const exampleProject = {
-//   package: 'test',
-//   modules: [
-//     {
-//       name: 'test',
-//       code: exampleModule,
-//     },
-//   ],
-//   dependencies: [
-//     {
-//       name: 'Sui',
-//       address: '0x2',
-//     },
-//   ],
-// };
 
 type CompileReturn = {
   compiledModules: string[];
@@ -163,6 +152,9 @@ export async function testPackage(project: Project): Promise<TestReturn> {
   project.modules.forEach((module) => {
     fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code);
   });
+
+  // Add the test module to the project directory
+  fs.writeFileSync(`${tempProjectSourcesPath}/birthday_bot_test.move`, MOCK_TEST_MODULE);
 
   // Create toml file based on the project's dependencies and project name
   let addresses = '';
