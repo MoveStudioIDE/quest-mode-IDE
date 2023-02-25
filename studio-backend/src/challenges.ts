@@ -1,27 +1,38 @@
 import * as fs from 'fs';
-import { Challenge, ChallengeType, Module} from './types';
+import { Challenge, ChallengeType, Template} from './types';
 
 export function getChallenge(type: ChallengeType, challengeName: string): Challenge{
-    const dir = `./${type}s/${challengeName}`
-
-    const sourceDir = dir+`/sources`
-    const sourceFiles = fs.readdirSync(sourceDir)
-
-    const sources: Module[] = []
-    for(const name of sourceFiles){
-        const code = fs.readFileSync(sourceDir+`/${name}`)
-        sources.push({
-            name,
-            code
-        })
-    }
-
-    const config = fs.readFileSync(dir+`/config.json`)
+    const challengeDir = getChallengDir(type, challengeName)
+    const templates = getTemplates(challengeDir);
+    const config = getConfig(challengeDir)
 
     const challenge = {
-        modules:sources,
+        templates,
         config
     }
 
     return challenge
+}
+
+export function getChallengDir(type: ChallengeType, challengeName: string): string {
+    return `./${type}s/${challengeName}`;
+}
+
+export function getConfig(challengeDir: string): Buffer {
+   return fs.readFileSync(challengeDir+`/config.json`)
+}
+
+export function getTemplates(challengeDir: string): Template[] {
+    const templatesDir = challengeDir+`/templates`
+    const sourceFiles = fs.readdirSync(templatesDir)
+
+    const templates: Template[] = []
+    for(const name of sourceFiles){
+        const code = fs.readFileSync(templatesDir+`/${name}`)
+        templates.push({
+            name,
+            code
+        })
+    }
+    return templates
 }

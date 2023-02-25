@@ -20,12 +20,12 @@ export type SubmitReturn = {
 export type Project = {
   package: string;
   dependencies: Dependency[];
-  modules: Module[];
+  modules: Template[];
 }
 
 export type Challenge = {
   config: Buffer;
-  modules: Module[];
+  templates: Template[];
 }
 
 export type Dependency = {
@@ -33,7 +33,7 @@ export type Dependency = {
   address: string;
 }
 
-export type Module = {
+export type Template = {
   name: string;
   code: Buffer;
 }
