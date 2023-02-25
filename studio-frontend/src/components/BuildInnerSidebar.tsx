@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Challenge, Puzzle, PuzzleTemplates } from "../pages/BuildPage";
+import { Challenge, CHALLENGE_TYPE, Puzzle, PuzzleTemplates } from "../pages/BuildPage";
 import { Dependency, Module, Project } from "../types/project-types";
 
 function BuildInnerSidebar(
@@ -10,6 +10,10 @@ function BuildInnerSidebar(
     currentProject: Challenge | undefined,
     currentModule: string | undefined,
 
+    challengeType: CHALLENGE_TYPE | undefined,
+    incrementStep: () => void,
+    decrementStep: () => void,
+
 
     title: string, 
     objective: string,
@@ -19,7 +23,7 @@ function BuildInnerSidebar(
 
   //---Helper---//
 
-  const tableModules = (props.currentProject as Puzzle)?.templates.map((template: PuzzleTemplates) => {
+  const tableModules = (props.challengeType === CHALLENGE_TYPE.puzzle) ? (props.currentProject as Puzzle)?.templates.map((template: PuzzleTemplates) => {
     const templateName = template.name;
 
     return (
@@ -49,7 +53,7 @@ function BuildInnerSidebar(
         </td>
       </tr>
     )
-  });
+  }) : [];
 
 
   //---Render---//
@@ -83,27 +87,28 @@ function BuildInnerSidebar(
           </div>
 
           <hr className="p-1"/>
-          
-          
-          <div>
-            <table  className="table table-compact table-zebra w-full [&_tr.hover:hover_*]:!bg-neutral">
-              <thead>
-                <tr>
-                  <th colSpan={3} style={{position: "relative"}} className="text-center">Modules</th>
-                </tr>
-              </thead>
-              <tbody className="">
-                {tableModules}
-              </tbody>
-            </table>
-          </div>
 
-          <hr className="p-1"/>
+          {
+            props.challengeType === CHALLENGE_TYPE.puzzle &&
+            <div>
+              <table  className="table table-compact table-zebra w-full [&_tr.hover:hover_*]:!bg-neutral">
+                <thead>
+                  <tr>
+                    <th colSpan={3} style={{position: "relative"}} className="text-center">Modules</th>
+                  </tr>
+                </thead>
+                <tbody className="">
+                  {tableModules}
+                </tbody>
+              </table>
+            </div>
+          }
+          
 
           <div className="" style={{display: "flex", justifyContent: "center"}}>
             <button 
               onClick={props.compileCode} 
-              className={`btn btn-xs btn-warning btn-outline w-min h-min ${tableModules?.length === 0 ? 'btn-disabled' : ''} step6`}
+              className={`btn btn-xs btn-warning btn-outline w-min h-min `}
               style={{margin:"2px 2px", marginRight:"10px"}}
             >
               Compile
@@ -111,7 +116,7 @@ function BuildInnerSidebar(
             
             <button 
               onClick={props.testProject} 
-              className={`btn btn-xs btn-warning btn-outline w-min h-min ${tableModules?.length === 0 ? 'btn-disabled' : ''} step6`}
+              className={`btn btn-xs btn-warning btn-outline w-min h-min `}
               style={{margin:"2px 2px", marginLeft:"10px"}}
             >
               Test
@@ -120,12 +125,37 @@ function BuildInnerSidebar(
           <div style={{display: "flex", justifyContent: "space-around"}}>
             <button 
               onClick={props.testProject} 
-              className={`btn btn-xs btn-success btn-outline w-min h-min ${tableModules?.length === 0 ? 'btn-disabled' : ''} step6`}
+              className={`btn btn-xs btn-success btn-outline w-min h-min `}
               style={{margin:"2px 2px", marginLeft:"10px"}}
             >
               Submit
             </button>
           </div>
+
+          {
+            props.challengeType === CHALLENGE_TYPE.quest &&
+            <div>
+              <hr className="p-1"/>
+              <div className="flex justify-center">
+                <div className="btn-group">
+                  <button 
+                    className="btn btn-outline"
+                    onClick={props.decrementStep}
+                  >
+                    «
+                  </button>
+                  <button className="btn btn-outline">step {props.currentProject?.templates.findIndex((t) => t.name === props.currentModule) || 0 + 1}/{props.currentProject?.templates.length}</button>
+                  <button 
+                    className="btn btn-outline"
+                    onClick={props.incrementStep}
+                  >
+                    »
+                  </button>
+                </div>
+              </div>
+              
+            </div>
+          }
         </div>
       </div>
     </div>

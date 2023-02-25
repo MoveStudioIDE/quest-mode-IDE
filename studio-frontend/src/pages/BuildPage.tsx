@@ -16,7 +16,7 @@ import {Buffer} from 'buffer';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:80/';
 
-enum CHALLENGE_TYPE {
+export enum CHALLENGE_TYPE {
   puzzle, 
   quest
 }
@@ -46,7 +46,7 @@ export type Puzzle = {
 }
 
 export type Quest = {
-  templates: string[],
+  templates: PuzzleTemplates[],
 }
 
 export type PuzzleTemplates = {
@@ -524,6 +524,43 @@ function BuildPage(props: {
     // setActiveModules(activeModules.filter((m) => m !== moduleName));
   }
 
+  const incrementStep = () => {
+    // get index of current template
+    if (!challenge) {
+      return;
+    }
+    const index = (challenge as Puzzle).templates.findIndex((t) => t.name === currentModule);
+    if (index === -1) {
+      return;
+    }
+    // if index is last template, do nothing
+    if (index === (challenge as Puzzle).templates.length - 1) {
+      return;
+    }
+    // set current template to next template
+    handleModuleChange((challenge as Puzzle).templates[index + 1].name);
+  }
+
+  const decrementStep = () => {
+    // get index of current template
+    if (!challenge) {
+      return;
+    }
+
+    const index = (challenge as Puzzle).templates.findIndex((t) => t.name === currentModule);
+    if (index === -1) {
+      return;
+    }
+
+    // if index is first template, do nothing
+    if (index === 0) {
+      return;
+    }
+
+    // set current template to previous template
+    handleModuleChange((challenge as Puzzle).templates[index - 1].name);
+  }
+
   const resetCache = async () => {
     const confirmReset = confirm("This will clear all of your projects and reset the demo project. Press OK to continue.")
 
@@ -596,6 +633,10 @@ function BuildPage(props: {
             // compileError={compileError}
             // activeModules={activeModules}
             addActiveModules={addActiveModulesHandler}
+
+            challengeType={challengeType}
+            incrementStep={incrementStep}
+            decrementStep={decrementStep}
             
             title={challengeConfig?.name || ''}
             objective={challengeConfig?.objective || ''}
@@ -632,6 +673,9 @@ function BuildPage(props: {
             activeModules={activeModules}
             removeActiveModule={removeActiveModuleHandler}
             toast={toast}
+
+            challengeType={challengeType}
+
             // tutorialSteps={steps}
             // tutorialCallback={tutorialCallback}
             // runTutorial={runTutorial}

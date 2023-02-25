@@ -7,7 +7,7 @@ import fs from 'fs';
 import Ansi from "ansi-to-react";
 import stripAnsi from 'strip-ansi';
 import { shortenWord } from "../utils/address-shortener";
-import { Challenge } from "../pages/BuildPage";
+import { Challenge, CHALLENGE_TYPE } from "../pages/BuildPage";
 // import * as editorThemeJsons from "../utils/themes.json"
 const editorThemeJsons = require('../utils/themes.json')
 
@@ -57,6 +57,8 @@ function BuildCanvas(
     activeModules: string[],
     removeActiveModule: (module: string) => void,
     toast: JSX.Element | undefined,
+
+    challengeType: CHALLENGE_TYPE | undefined,
 
     // tutorialSteps:  any[],
     // runTutorial: boolean,
@@ -262,12 +264,15 @@ function BuildCanvas(
       {
         modules && modules.length > 0 &&
         <div>
-          <div className="tabs step4" style={{overflow: "auto", display: "flex", flexWrap: "inherit"}}>
-            {/* <a className="tab tab-bordered">Tab 1</a> 
-            <a className="tab tab-bordered tab-active">Tab 2</a> 
-            <a className="tab tab-bordered">Tab 3</a> */}
-            {modules}
-          </div>
+          {
+            props.challengeType === CHALLENGE_TYPE.puzzle &&
+            <div className="tabs step4" style={{overflow: "auto", display: "flex", flexWrap: "inherit"}}>
+              {/* <a className="tab tab-bordered">Tab 1</a> 
+              <a className="tab tab-bordered tab-active">Tab 2</a> 
+              <a className="tab tab-bordered">Tab 3</a> */}
+              {modules}
+            </div>
+          }
           <Editor
             height="90vh"
             width={`100%`}
