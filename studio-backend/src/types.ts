@@ -18,8 +18,7 @@ export type SubmitReturn = {
 }
 
 export type Project = {
-  package: string;
-  dependencies: Dependency[];
+  challenge: string;
   templates: Template[];
 }
 

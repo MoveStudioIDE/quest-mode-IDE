@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { CompileReturn, Project, SubmitReturn, TestReturn } from './types';
 import dotenv from 'dotenv';
 import axios from 'axios';
+import { setupPackage } from './helpers';
 // import stripAnsi from 'strip-ansi';
 
 const MOCK_TEST_MODULE = `module overmind::birthday_bot_test {
@@ -15,57 +16,12 @@ const MOCK_TEST_MODULE = `module overmind::birthday_bot_test {
 
 const TEMP_DIR = `${__dirname}/../temp-packages`;
 
-
-function makeRandString(length: number) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-}
-
 export async function compile(project: Project): Promise<CompileReturn> {
 
-  // Created temporary project in user directory
-  const tempProjectPath = `${TEMP_DIR}/${project.package+makeRandString(20)}`;
+  const challengeType = project.challenge.split('%')[0].toLowerCase();
+  const challengeName = project.challenge.split('%')[1].toLowerCase();
 
-  // console.log(tempProjectPath)
-
-  // Create the project directory
-  fs.mkdirSync(tempProjectPath, { recursive: true });
-
-  // Created the project's sources directory
-  const tempProjectSourcesPath = `${tempProjectPath}/sources`;
-  fs.mkdirSync(tempProjectSourcesPath, { recursive: true });
-
-  // Add the module files to the project's sources directory
-  project.templates.forEach((module) => {
-    fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code);
-  });
-
-  // NOTE: remove line in addresses once it is a default dependency in the FE
-  // NOTE: I replaced the two dependencies with the ones used in the overmind repo 
-  //        This was the old one: AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
-
-  const toml = `
-    [package]
-    name = "${project.package}"
-    version = "0.0.1"
-    [dependencies]
-    MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
-    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
-    [addresses]
-    
-  `;
-
-  fs.writeFileSync(
-    `${tempProjectPath}/Move.toml`,
-    toml
-  )
+  const tempProjectPath = await setupPackage(project, challengeType);
 
   // Compile the project
   try {
@@ -74,7 +30,7 @@ export async function compile(project: Project): Promise<CompileReturn> {
       { encoding: 'utf-8'}
     );
 
-    const buildDirfiles = fs.readdirSync(`${tempProjectPath}/build/${project.package}/bytecode_modules/`);
+    const buildDirfiles = fs.readdirSync(`${tempProjectPath}/build/${challengeName}/bytecode_modules/`);
     let bytecodeFile;
     for(const file of buildDirfiles){
       if(file.endsWith(".mv")){
@@ -82,7 +38,7 @@ export async function compile(project: Project): Promise<CompileReturn> {
       }
     }
 
-    const compiledModules = fs.readFileSync(`${tempProjectPath}/build/${project.package}/bytecode_modules/${bytecodeFile}`, "base64");
+    const compiledModules = fs.readFileSync(`${tempProjectPath}/build/${challengeName}/bytecode_modules/${bytecodeFile}`, "base64");
 
     // Remove the temporary project directory
     fs.rmdirSync(tempProjectPath, { recursive: true });
@@ -111,41 +67,11 @@ export async function compile(project: Project): Promise<CompileReturn> {
 }
 
 export async function testPackage(project: Project): Promise<TestReturn> {
-// Created temporary project in user directory
-  const tempProjectPath = `${TEMP_DIR}/${project.package+makeRandString(20)}`;
 
-  // console.log(tempProjectPath)
+  const challengeType = project.challenge.split('%')[0].toLowerCase();
+  // const challengeName = project.challenge.split('%')[1].toLowerCase();
 
-  // Create the project directory
-  fs.mkdirSync(tempProjectPath, { recursive: true });
-
-  // Created the project's sources directory
-  const tempProjectSourcesPath = `${tempProjectPath}/sources`;
-  fs.mkdirSync(tempProjectSourcesPath, { recursive: true });
-
-  // Add the module files to the project's sources directory
-  project.templates.forEach((module) => {
-    fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code.toString());
-  });
-
-  // Add the test module to the project directory
-  fs.writeFileSync(`${tempProjectSourcesPath}/birthday_bot_test.move`, MOCK_TEST_MODULE);
-
-  // NOTE: remove line in addresses once it is a default dependency in the FE
-  const toml = `
-    [package]
-    name = "${project.package}"
-    version = "0.0.1"
-    [dependencies]
-    MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
-    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
-    [addresses]
-  `;
-
-  fs.writeFileSync(
-    `${tempProjectPath}/Move.toml`,
-    toml
-  )
+  const tempProjectPath = await setupPackage(project, challengeType);
 
   // Compile the project
   try {
