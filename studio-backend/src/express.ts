@@ -1,6 +1,8 @@
 import cors from 'cors';
 import express from 'express';
+import { getChallengDir, getChallenge, getConfig, getTemplates } from './challenges';
 import { compile, testPackage } from './compile';
+import { ChallengeType } from './types';
 
 const app = express();
 const portHttp = 80;
@@ -32,10 +34,6 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/projects', (req, res) => {
-  res.send('projects');
-});
-
 // app.get('/projects/:address', (req, res) => {
 //   const address = req.params.address as string;
 
@@ -44,6 +42,38 @@ app.get('/projects', (req, res) => {
 
 //   res.send(projects);
 // });
+
+app.get('/challenge', async (req, res) => {
+  const type = req.query.type as ChallengeType;
+  const name = req.query.name as string;
+  const challenge = getChallenge(type, name);
+  res.send({
+    templateNames: challenge.templates.map((template) => template.name),
+    templates: challenge.templates.map((template) => template.code.toString('base64')),
+    config: challenge.config.toString("base64")
+  });
+});
+
+app.get('/config', async (req, res) => {
+  const type = req.query.type as ChallengeType;
+  const name = req.query.name as string;
+  const challengeDir = getChallengDir(type, name)
+  const config = getConfig(challengeDir)
+  res.send({
+    config: config.toString("base64")
+  });
+});
+
+app.get('/templates', async (req, res) => {
+  const type = req.query.type as ChallengeType;
+  const name = req.query.name as string;
+  const challengeDir = getChallengDir(type, name)
+  const templates = getTemplates(challengeDir)
+  res.send({
+    templateNames: templates.map((template) => template.name),
+    templates: templates.map((template) => template.code.toString('base64'))
+  });
+});
 
 app.post('/compile', async (req, res) => {
   const project = req.body;
