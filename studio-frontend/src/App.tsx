@@ -34,7 +34,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* <Route path="/" element={<LandingPage />} /> */}
-            <Route path="/build" element={<BuildPage projectName='Birthday_Bot' />} />
+            <Route path="/build" element={<BuildPage challenge='puzzle%Birthday_Bot' />} />
             {/* <Route path="/deployment" element={<DeploymentPage />} /> */}
           </Routes>
         </BrowserRouter>
