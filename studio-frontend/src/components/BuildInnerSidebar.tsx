@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Challenge, Puzzle } from "../pages/BuildPage";
+import { Challenge, Puzzle, PuzzleTemplates } from "../pages/BuildPage";
 import { Dependency, Module, Project } from "../types/project-types";
 
 function BuildInnerSidebar(
@@ -19,8 +19,8 @@ function BuildInnerSidebar(
 
   //---Helper---//
 
-  const tableModules = props.currentProject?.templates.map((template: string, index: number) => {
-    const templateName = (props.currentProject as Puzzle).templateNames[index];
+  const tableModules = (props.currentProject as Puzzle)?.templates.map((template: PuzzleTemplates) => {
+    const templateName = template.name;
 
     return (
       <tr 

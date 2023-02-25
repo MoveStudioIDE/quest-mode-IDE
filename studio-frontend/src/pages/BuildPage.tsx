@@ -42,12 +42,16 @@ type ChallengeConfig = PuzzleConfig | QuestConfig;
 export type Challenge = Puzzle | Quest;
 
 export type Puzzle = {
-  templates: string[],
-  templateNames: string[],
+  templates: PuzzleTemplates[]
 }
 
 export type Quest = {
   templates: string[],
+}
+
+export type PuzzleTemplates = {
+  name: string,
+  code: string,
 }
 
 
@@ -133,11 +137,17 @@ function BuildPage(props: {
         const templatesBase64 = res.data as {templates: string[], templateNames: string[]};
         console.log('templatesBase64', templatesBase64)
         const decodedTemplates = templatesBase64.templates.map((template) => (Buffer.from(template, 'base64').toString()));
+
+        const templates = decodedTemplates.map((template, index) => {
+          return {
+            name: templatesBase64.templateNames[index],
+            code: template,
+          }
+        });
         
         await indexedDb.putValue('challenges', {
           challenge: props.challenge,
-          templates: decodedTemplates,
-          templateNames: templatesBase64.templateNames,
+          templates: templates
         }); 
       }
          
@@ -241,7 +251,7 @@ function BuildPage(props: {
                   }
                   if (activeModules.length == 0) {
                     console.log('no active modules')
-                    addActiveModulesHandler((challenge as Puzzle).templateNames[0]);
+                    addActiveModulesHandler((challenge as Puzzle).templates[0].name);
                   }
                   setShowError(true);
                 }}
@@ -328,7 +338,7 @@ function BuildPage(props: {
                 }
                 if (activeModules.length == 0) {
                   console.log('no active modules')
-                  addActiveModulesHandler((challenge as Puzzle).templateNames[0]);
+                  addActiveModulesHandler((challenge as Puzzle).templates[0].name);
                 }
                 setShowTestResults(true);
               }}
@@ -349,8 +359,8 @@ function BuildPage(props: {
 
   useEffect(() => {
     if (challenge && challenge.templates.length > 0 && currentModule == null && activeModules.length == 0) {
-      setActiveModules([(challenge as Puzzle).templateNames[0]])
-      setCurrentModule((challenge as Puzzle).templateNames[0]);
+      setActiveModules([(challenge as Puzzle).templates[0].name])
+      setCurrentModule((challenge as Puzzle).templates[0].name);
     }
   }, [challenge]);
   
@@ -467,9 +477,9 @@ function BuildPage(props: {
       return;
     }
 
-    for (let i = 0; i < (challenge as Puzzle).templateNames.length; i++) {
-      if ((challenge as Puzzle).templateNames[i] === currentModule) {
-        setCode((challenge as Puzzle).templates[i]);
+    for (let i = 0; i < (challenge as Puzzle).templates.length; i++) {
+      if ((challenge as Puzzle).templates[i].name === currentModule) {
+        setCode((challenge as Puzzle).templates[i].code);
         return;
       }
     }

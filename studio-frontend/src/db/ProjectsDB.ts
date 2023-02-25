@@ -93,10 +93,9 @@ export class IndexedDb {
     const store = tx.objectStore(tableName);
     const result = await store.get(project);
     const templates = result.templates;
-    const templateNames = result.templateNames;
     for (let i = 0; i < templates.length; i++) {
-      if (templateNames[i] === moduleName) {
-        templates[i] = code;
+      if (templates[i].name === moduleName) {
+        templates[i].code = code;
         break;
       }
     }
