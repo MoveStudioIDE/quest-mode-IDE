@@ -4,7 +4,7 @@ import BuildCanvas from "../components/BuildCanvas";
 import { useEffect, useState } from "react";
 import { IndexedDb } from "../db/ProjectsDB";
 import { getProjectData } from "../db/ProjectDB";
-import { Project } from "../types/project-types";
+// import { Project } from "../types/project-types";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Header from "../components/Header";
@@ -13,241 +13,307 @@ import {SPINNER_COLORS} from "../utils/theme";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import Module from "module";
 
-const puzzles = {
-  Birthday_Bot: {
-    title: 'Birthday Bot',
-    objective: 'Create a Move program that will wish a happy birthday to a friend.',
-    instructions: [
-      'Create a new Move program called birthday.move',
-      'Create a new resource called BirthdayBot',
-      'Create a new function called wish_birthday',
-      'Create a new function called main',
-      'Create a new resource called BirthdayBot',
-      'Create a new function called wish_birthday',
-      'Create a new function called main',
-      'Create a new resource called BirthdayBot',
-    ], 
-    package: 'overmind',
-    modules: [
-      {
-        name: 'birthday_bot',
-        code: `module overmind::birthday_bot {
-    use aptos_std::table::Table;
-    use std::signer;
-    use std::error;
-    use aptos_framework::account;
-    use std::vector;
-    use aptos_framework::coin;
-    use aptos_framework::aptos_coin::AptosCoin;
-    use aptos_std::table;
-    use aptos_framework::timestamp;
+// const puzzles = {
+//   Birthday_Bot: {
+//     title: 'Birthday Bot',
+//     objective: 'Create a Move program that will wish a happy birthday to a friend.',
+//     instructions: [
+//       'Create a new Move program called birthday.move',
+//       'Create a new resource called BirthdayBot',
+//       'Create a new function called wish_birthday',
+//       'Create a new function called main',
+//       'Create a new resource called BirthdayBot',
+//       'Create a new function called wish_birthday',
+//       'Create a new function called main',
+//       'Create a new resource called BirthdayBot',
+//     ], 
+//     package: 'overmind',
+//     modules: [
+//       {
+//         name: 'birthday_bot',
+//         code: `module overmind::birthday_bot {
+//     use aptos_std::table::Table;
+//     use std::signer;
+//     use std::error;
+//     use aptos_framework::account;
+//     use std::vector;
+//     use aptos_framework::coin;
+//     use aptos_framework::aptos_coin::AptosCoin;
+//     use aptos_std::table;
+//     use aptos_framework::timestamp;
 
-    //
-    // Errors
-    //
-    const ERROR_DISTRIBUTION_STORE_EXIST: u64 = 0;
-    const ERROR_DISTRIBUTION_STORE_DOES_NOT_EXIST: u64 = 1;
-    const ERROR_LENGTHS_NOT_EQUAL: u64 = 2;
-    const ERROR_BIRTHDAY_GIFT_DOES_NOT_EXIST: u64 = 3;
-    const ERROR_BIRTHDAY_TIMESTAMP_SECONDS_HAS_NOT_PASSED: u64 = 4;
+//     //
+//     // Errors
+//     //
+//     const ERROR_DISTRIBUTION_STORE_EXIST: u64 = 0;
+//     const ERROR_DISTRIBUTION_STORE_DOES_NOT_EXIST: u64 = 1;
+//     const ERROR_LENGTHS_NOT_EQUAL: u64 = 2;
+//     const ERROR_BIRTHDAY_GIFT_DOES_NOT_EXIST: u64 = 3;
+//     const ERROR_BIRTHDAY_TIMESTAMP_SECONDS_HAS_NOT_PASSED: u64 = 4;
 
-    //
-    // Data structures
-    //
-    struct BirthdayGift has drop, store {
-        amount: u64,
-        birthday_timestamp_seconds: u64,
-    }
+//     //
+//     // Data structures
+//     //
+//     struct BirthdayGift has drop, store {
+//         amount: u64,
+//         birthday_timestamp_seconds: u64,
+//     }
 
-    struct DistributionStore has key {
-        owner: address,
-        birthday_gifts: Table<address, BirthdayGift>,
-        signer_capability: account::SignerCapability,
-    }
+//     struct DistributionStore has key {
+//         owner: address,
+//         birthday_gifts: Table<address, BirthdayGift>,
+//         signer_capability: account::SignerCapability,
+//     }
 
-    //
-    // Assert functions
-    //
-    public fun assert_distribution_store_exists(
-        account_address: address,
-    ) {
-        // TODO: assert that \`DistributionStore\` exists
-    }
+//     //
+//     // Assert functions
+//     //
+//     public fun assert_distribution_store_exists(
+//         account_address: address,
+//     ) {
+//         // TODO: assert that \`DistributionStore\` exists
+//     }
 
-    public fun assert_distribution_store_does_not_exist(
-        account_address: address,
-    ) {
-        // TODO: assert that \`DistributionStore\` does not exist
-    }
+//     public fun assert_distribution_store_does_not_exist(
+//         account_address: address,
+//     ) {
+//         // TODO: assert that \`DistributionStore\` does not exist
+//     }
 
-    public fun assert_lengths_are_equal(
-        addresses: vector<address>,
-        amounts: vector<u64>,
-        timestamps: vector<u64>
-    ) {
-        // TODO: assert that the lengths of \`addresses\`, \`amounts\`, and \`timestamps\` are all equal
-    }
+//     public fun assert_lengths_are_equal(
+//         addresses: vector<address>,
+//         amounts: vector<u64>,
+//         timestamps: vector<u64>
+//     ) {
+//         // TODO: assert that the lengths of \`addresses\`, \`amounts\`, and \`timestamps\` are all equal
+//     }
 
-    public fun assert_birthday_gift_exists(
-        distribution_address: address,
-        address: address,
-    ) acquires DistributionStore {
-        // TODO: assert that \`birthday_gifts\` exists
-    }
+//     public fun assert_birthday_gift_exists(
+//         distribution_address: address,
+//         address: address,
+//     ) acquires DistributionStore {
+//         // TODO: assert that \`birthday_gifts\` exists
+//     }
 
-    public fun assert_birthday_timestamp_seconds_has_passed(
-        distribution_address: address,
-        address: address,
-    ) acquires DistributionStore {
-        // TODO: assert that the current timestamp is greater than or equal to \`birthday_timestamp_seconds\`
-    }
+//     public fun assert_birthday_timestamp_seconds_has_passed(
+//         distribution_address: address,
+//         address: address,
+//     ) acquires DistributionStore {
+//         // TODO: assert that the current timestamp is greater than or equal to \`birthday_timestamp_seconds\`
+//     }
 
-    //
-    // Entry functions
-    //
-    /**
-    * Initializes birthday gift distribution contract
-    * @param account - account signer executing the function
-    * @param addresses - list of addresses that can claim their birthday gifts
-    * @param amounts  - list of amounts for birthday gifts
-    * @param birthday_timestamps - list of birthday timestamps in seconds (only claimable after this timestamp has passed)
-    **/
-    public entry fun initialize_distribution(
-        account: &signer,
-        addresses: vector<address>,
-        amounts: vector<u64>,
-        birthday_timestamps: vector<u64>
-    ) {
-        // TODO: check \`DistributionStore\` does not exist
+//     //
+//     // Entry functions
+//     //
+//     /**
+//     * Initializes birthday gift distribution contract
+//     * @param account - account signer executing the function
+//     * @param addresses - list of addresses that can claim their birthday gifts
+//     * @param amounts  - list of amounts for birthday gifts
+//     * @param birthday_timestamps - list of birthday timestamps in seconds (only claimable after this timestamp has passed)
+//     **/
+//     public entry fun initialize_distribution(
+//         account: &signer,
+//         addresses: vector<address>,
+//         amounts: vector<u64>,
+//         birthday_timestamps: vector<u64>
+//     ) {
+//         // TODO: check \`DistributionStore\` does not exist
 
-        // TODO: check all lengths of \`addresses\`, \`amounts\`, and \`birthday_timestamps\` are equal
+//         // TODO: check all lengths of \`addresses\`, \`amounts\`, and \`birthday_timestamps\` are equal
 
-        // TODO: create resource account
+//         // TODO: create resource account
 
-        // TODO: register Aptos coin to resource account
+//         // TODO: register Aptos coin to resource account
 
-        // TODO: loop through the lists and push items to birthday_gifts table
+//         // TODO: loop through the lists and push items to birthday_gifts table
 
-        // TODO: transfer the sum of all items in \`amounts\` from initiator to resource account
+//         // TODO: transfer the sum of all items in \`amounts\` from initiator to resource account
 
-        // TODO: move_to resource \`DistributionStore\` to account signer
-    }
+//         // TODO: move_to resource \`DistributionStore\` to account signer
+//     }
 
-    /**
-    * Add birthday gift to \`DistributionStore.birthday_gifts\`
-    * @param account - account signer executing the function
-    * @param address - address that can claim the birthday gift
-    * @param amount  - amount for the birthday gift
-    * @param birthday_timestamp_seconds - birthday timestamp in seconds (only claimable after this timestamp has passed)
-    **/
-    public entry fun add_birthday_gift(
-        account: &signer,
-        address: address,
-        amount: u64,
-        birthday_timestamp_seconds: u64
-    ) acquires DistributionStore {
-        // TODO: check that the distribution store exists
+//     /**
+//     * Add birthday gift to \`DistributionStore.birthday_gifts\`
+//     * @param account - account signer executing the function
+//     * @param address - address that can claim the birthday gift
+//     * @param amount  - amount for the birthday gift
+//     * @param birthday_timestamp_seconds - birthday timestamp in seconds (only claimable after this timestamp has passed)
+//     **/
+//     public entry fun add_birthday_gift(
+//         account: &signer,
+//         address: address,
+//         amount: u64,
+//         birthday_timestamp_seconds: u64
+//     ) acquires DistributionStore {
+//         // TODO: check that the distribution store exists
 
-        // TODO: set new birthday gift to new \`amount\` and \`birthday_timestamp_seconds\` (birthday_gift already exists, sum \`amounts\` and override the \`birthday_timestamp_seconds\`
+//         // TODO: set new birthday gift to new \`amount\` and \`birthday_timestamp_seconds\` (birthday_gift already exists, sum \`amounts\` and override the \`birthday_timestamp_seconds\`
 
-        // TODO: transfer the \`amount\` from initiator to resource account
-    }
+//         // TODO: transfer the \`amount\` from initiator to resource account
+//     }
 
-    /**
-    * Remove birthday gift from \`DistributionStore.birthday_gifts\`
-    * @param account - account signer executing the function
-    * @param address - \`birthday_gifts\` address
-    **/
-    public entry fun remove_birthday_gift(
-        account: &signer,
-        address: address,
-    ) acquires DistributionStore {
-        // TODO: check that the distribution store exists
+//     /**
+//     * Remove birthday gift from \`DistributionStore.birthday_gifts\`
+//     * @param account - account signer executing the function
+//     * @param address - \`birthday_gifts\` address
+//     **/
+//     public entry fun remove_birthday_gift(
+//         account: &signer,
+//         address: address,
+//     ) acquires DistributionStore {
+//         // TODO: check that the distribution store exists
 
-        // TODO: if \`birthday_gifts\` exists, remove \`birthday_gift\` from table and transfer \`amount\` from resource account to initiator
-    }
+//         // TODO: if \`birthday_gifts\` exists, remove \`birthday_gift\` from table and transfer \`amount\` from resource account to initiator
+//     }
 
-    /**
-    * Claim birthday gift from \`DistributionStore.birthday_gifts\`
-    * @param account - account signer executing the function
-    * @param distribution_address - distribution contract address
-    **/
-    public entry fun claim_birthday_gift(
-        account: &signer,
-        distribution_address: address,
-    ) acquires DistributionStore {
-        // TODO: check that the distribution store exists
+//     /**
+//     * Claim birthday gift from \`DistributionStore.birthday_gifts\`
+//     * @param account - account signer executing the function
+//     * @param distribution_address - distribution contract address
+//     **/
+//     public entry fun claim_birthday_gift(
+//         account: &signer,
+//         distribution_address: address,
+//     ) acquires DistributionStore {
+//         // TODO: check that the distribution store exists
 
-        // TODO: check that the \`birthday_gift\` exists
+//         // TODO: check that the \`birthday_gift\` exists
 
-        // TODO: check that the \`birthday_timestamp_seconds\` has passed
+//         // TODO: check that the \`birthday_timestamp_seconds\` has passed
 
-        // TODO: remove \`birthday_gift\` from table and transfer \`amount\` from resource account to initiator
-    }
-}`
-      },
-    ]
-  }
-} as { [key: string]: { title: string, objective: string, instructions: string[], package: string, modules: {}[] } }
+//         // TODO: remove \`birthday_gift\` from table and transfer \`amount\` from resource account to initiator
+//     }
+// }`
+//       },
+//     ]
+//   }
+// } as { [key: string]: { title: string, objective: string, instructions: string[], package: string, modules: {}[] } }
 
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:80/';
 
+enum CHALLENGE_TYPE {
+  puzzle, 
+  quest
+}
+
+type PuzzleConfig = {
+  name: string,
+  description: string, 
+  objective: string,
+  instructions: string[],
+}
+
+type QuestConfig = {
+  name: string, 
+  description: string, 
+  objective: string,
+  steps: string[], 
+  objectives: string[],
+  instructions: string[][],
+}
+
+type ChallengeConfig = PuzzleConfig | QuestConfig;
+
+export type Challenge = Puzzle | Quest;
+
+export type Puzzle = {
+  templates: string[],
+  templateNames: string[],
+}
+
+export type Quest = {
+  templates: string[],
+}
+
+
 function BuildPage(props: {
-  projectName: string
+  challenge: string // Encoding: TYPE%NAME
 }) {
 
   const [theme, setTheme] = useState('dark');
   const [toast, setToast] = useState<JSX.Element | undefined>();
 
+  // Challenge data
+  const [challengeType, setChallengeType] = useState<CHALLENGE_TYPE>();
+  const [challengeConfig, setChallengeConfig] = useState<ChallengeConfig>();
+
   // Initialize indexedDb
   let indexedDb: IndexedDb;
   useEffect(() => {
-    const startIndexDb = async () => {
-      indexedDb = new IndexedDb('test');
-      await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+
+    if (props.challenge.split('%').length !== 2) {
+      throw new Error('Invalid challenge');
+    }
+
+    if (props.challenge.split('%')[0].toLowerCase() === 'puzzle') {
+      setChallengeType(CHALLENGE_TYPE.puzzle);
+    } else if (props.challenge.split('%')[0].toLowerCase() === 'quest') {
+      setChallengeType(CHALLENGE_TYPE.quest);
+    } else {
+      throw new Error('Invalid challenge type');
+    }
+
+    const challengeName = props.challenge.split('%')[1];
+
+    // Retrieve challenge data from backend
+    const getChallengConfigeData = async () => {
+      if (challengeType === undefined) {
+        throw new Error('Challenge type not set');
+      }
+
+      const res = await axios.get(`${BACKEND_URL}challenge/config?type=${CHALLENGE_TYPE[challengeType]}&name=${challengeName}`); // Figure out this with evan
+      let challengeConfigData;
+      if (challengeType === CHALLENGE_TYPE.puzzle) {
+        challengeConfigData = res.data as PuzzleConfig;
+      } else if (challengeType === CHALLENGE_TYPE.quest){
+        challengeConfigData = res.data as QuestConfig;
+      } else {
+        throw new Error('Challenge type not set');
+      }
+      setChallengeConfig(challengeConfigData);
+    }
+
+    const initializeIndexedDb = async () => {
+
+      if (challengeType === undefined) {
+        throw new Error('Challenge type not set');
+      }
+
+      indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+      await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
       
-      const existingUser = localStorage.getItem(props.projectName);
+      const existingUser = localStorage.getItem(props.challenge);
       console.log('existingUser', existingUser);
       if (!existingUser) {
         console.log('setting user');
-        localStorage.setItem(props.projectName, 'true');
-        // Get puzzle data from backend
-        const puzzleData = puzzles[props.projectName];
-
-        await indexedDb.putValue('projects', {
-          package: puzzleData.package,
-          dependencies: [
-            {name: puzzleData.package, address: '0x0'},
-            {name: 'std', address: '0x1'}
-          ],
-          modules: puzzleData.modules,
+        localStorage.setItem(props.challenge, 'true');
+        
+        const res = await axios.get(`${BACKEND_URL}challenge/template?type=${CHALLENGE_TYPE[challengeType]}&name=${challengeName}`); // Figure out this with evan
+        const templatesBase64 = res.data as string[];
+        const templates = templatesBase64.map((template) => (Buffer.from(template).toString('base64')));
+        
+        await indexedDb.putValue('challenges', {
+          challenge: props.challenge,
+          templates: templates,
         }); 
       }
          
     }
-    startIndexDb().then(() => {
-      getProjects();
 
-      // Get puzzle data from backend
-      const puzzleData = puzzles[props.projectName];
-
-      handleProjectChange(puzzleData.package); 
-
-      
-      setTitle(puzzleData.title);
-      setObjective(puzzleData.objective);
-      setInstructions(puzzleData.instructions);
-
+    getChallengConfigeData().then(() => {
+      initializeIndexedDb().then(() => {
+        getProjectData(props.challenge);
+      });
     });
+
   }, []);
 
   const [code, setCode] = useState('');
 
-  const [projectList, setProjectList] = useState<string[]>([]);
-
-  const [currentProject, setCurrentProject] = useState<Project | null>(null);
-  const [currentModule, setCurrentModule] = useState<string | null>(null);
+  const [challenge, setChallenge] = useState<Challenge>();
+  const [currentModule, setCurrentModule] = useState<string>();
 
   const [compiledModules, setCompiledModules] = useState<string[]>([]);
   const [compileError, setCompileError] = useState<string>('');
@@ -257,29 +323,22 @@ function BuildPage(props: {
 
   const [activeModules, setActiveModules] = useState<string[]>([]);
 
-  const [title, setTitle] = useState<string>('');
-  const [objective, setObjective] = useState<string>('');
-  const [instructions, setInstructions] = useState<string[]>([]);
+  // const [title, setTitle] = useState<string>('');
+  // const [objective, setObjective] = useState<string>('');
+  // const [instructions, setInstructions] = useState<string[]>([]);
 
   
 
   //---Helpers---//
-  const getProjects = async () => {
-    indexedDb = new IndexedDb('test');
-    await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-    // console.log('db', indexedDb);
-    const allProjects = await indexedDb.getAllKeys('projects');
-    console.log('projectList', allProjects);
-    setProjectList(allProjects);
-  }
 
   const getProjectData = async (project: string) => {
-    indexedDb = new IndexedDb('test');
-    await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-    const projectData = await indexedDb.getValue('projects', project);
-    setCurrentProject(projectData);
-    // console.log('projectData', projectData);
-    // return projectData;
+    if (challengeType === undefined) {
+      throw new Error('Challenge type not set');
+    }
+    indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+    await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+    const challengeData = await indexedDb.getValue('challenges', project);
+    setChallenge(challengeData);
   }
 
   const compileCode = () => {
@@ -300,14 +359,10 @@ function BuildPage(props: {
     setCompiledModules([]);
     setShowError(false);
     setShowTestResults(false);
-    if (!currentProject) {
-      return;
-    }
 
     console.log('compiling with backend: ', BACKEND_URL);
-    console.log("currentProject", currentProject);
 
-    axios.post(`${BACKEND_URL}compile`, currentProject).then((res) => {
+    axios.post(`${BACKEND_URL}compile`, props.challenge).then((res) => {
       const compileResults = res.data as {
         compiledModules: string[];
         errorCode: string;
@@ -327,12 +382,12 @@ function BuildPage(props: {
                 className="btn btn-xs btn-ghost"
                 onClick={() => {
                   console.log()
-                  if (currentProject == null || currentProject.modules == null) {
+                  if (challenge == null || challenge.templates == null) {
                     return;
                   }
                   if (activeModules.length == 0) {
                     console.log('no active modules')
-                    addActiveModulesHandler(currentProject.modules[0].name);
+                    addActiveModulesHandler((challenge as Puzzle).templateNames[0]);
                   }
                   setShowError(true);
                 }}
@@ -385,13 +440,13 @@ function BuildPage(props: {
     setCompiledModules([]);
     setShowError(false);
     setShowTestResults(false);
-    if (!currentProject) {
+    if (!challenge) {
       return;
     }
 
     console.log('testing with backend: ', BACKEND_URL);
 
-    axios.post(`${BACKEND_URL}test`, currentProject).then((res) => {
+    axios.post(`${BACKEND_URL}test`, challenge).then((res) => {
       const testResults = res.data as {
         result: string;
         errorCode: string;
@@ -414,12 +469,12 @@ function BuildPage(props: {
               className="btn btn-xs btn-ghost"
               onClick={() => {
                 console.log()
-                if (currentProject == null || currentProject.modules == null) {
+                if (challenge == null || challenge.templates == null) {
                   return;
                 }
                 if (activeModules.length == 0) {
                   console.log('no active modules')
-                  addActiveModulesHandler(currentProject.modules[0].name);
+                  addActiveModulesHandler((challenge as Puzzle).templateNames[0]);
                 }
                 setShowTestResults(true);
               }}
@@ -446,28 +501,31 @@ function BuildPage(props: {
   }
 
   useEffect(() => {
-    if (currentProject && currentProject.modules.length > 0 && currentModule == null && activeModules.length == 0) {
-      setActiveModules([currentProject.modules[0].name])
-      setCurrentModule(currentProject.modules[0].name);
+    if (challenge && challenge.templates.length > 0 && currentModule == null && activeModules.length == 0) {
+      setActiveModules([(challenge as Puzzle).templates[0]])
+      setCurrentModule((challenge as Puzzle).templates[0]);
     }
-  }, [currentProject]);
+  }, [challenge]);
   
 
   //---Handlers---//
 
   const handleNewCode = (newCode: string, module: string) => {
     const updateModuleInIndexdb = async (newCode: string) => {
-      indexedDb = new IndexedDb('test');
-      await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-      if (!currentProject || !currentModule) {
+      if (challengeType === undefined) {
+        throw new Error('Challenge type not set');
+      }
+      indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+      await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+      if (!challenge || !currentModule) {
         console.log('f')
         return;
       }
-      await indexedDb.updateModule('projects', currentProject.package, currentModule, newCode);
+      await indexedDb.updateModule('projects', props.challenge, currentModule, newCode);
     }
-    if (!currentProject || !currentModule) {
+    if (!challenge || !currentModule) {
       console.log('f')
-      console.log('currentProject', currentProject);
+      console.log('challenge', challenge);
       console.log('currentModule', currentModule);
       return;
     }
@@ -483,7 +541,7 @@ function BuildPage(props: {
 
 
     updateModuleInIndexdb(newCode).then(() => {
-      getProjectData(currentProject.package);
+      getProjectData(props.challenge);
     }).then(() => {
 
     });
@@ -491,116 +549,119 @@ function BuildPage(props: {
   }
 
 
-  const handleProjectChange = (projectChange: string) => {
-    setActiveModules([]);
-    if (projectChange === '**default') {
-      setCurrentProject(null);
-      setCurrentModule(null);
-      setCode('')
-      console.log('default');
-    } else if (projectChange === '**addProject') {
+  // const handleProjectChange = (projectChange: string) => {
+  //   setActiveModules([]);
+  //   if (projectChange === '**default') {
+  //     setCurrentProject(null);
+  //     setCurrentModule(null);
+  //     setCode('')
+  //     console.log('default');
+  //   } else if (projectChange === '**addProject') {
 
-      setCurrentProject(null);
-      setCurrentModule(null);
-      setCode('');
-      console.log('addProject');
-      const addToIndexdb = async (newProjectName: string) => {
-        indexedDb = new IndexedDb('test');
-        await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-        await indexedDb.putValue('projects', {
-          package: newProjectName,
-          dependencies: [
-            {name: newProjectName, address: '0x0'},
-            {name: 'Sui', address: '0x02'}
-          ],
-          modules: []
-        });
-      }
-      const newProjectName = prompt('Enter project name');
-      if (!newProjectName) {
-        return;
-      }
+  //     setCurrentProject(null);
+  //     setCurrentModule(null);
+  //     setCode('');
+  //     console.log('addProject');
+  //     const addToIndexdb = async (newProjectName: string) => {
+  //       indexedDb = new IndexedDb('quest-projects');
+  //       await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+  //       await indexedDb.putValue('projects', {
+  //         package: newProjectName,
+  //         dependencies: [
+  //           {name: newProjectName, address: '0x0'},
+  //           {name: 'Sui', address: '0x02'}
+  //         ],
+  //         modules: []
+  //       });
+  //     }
+  //     const newProjectName = prompt('Enter project name');
+  //     if (!newProjectName) {
+  //       return;
+  //     }
 
-      // Make sure project name is unique
-      if (projectList.includes(newProjectName)) {
-        alert('Project name already exists');
-        return;
-      }
+  //     // Make sure project name is unique
+  //     if (projectList.includes(newProjectName)) {
+  //       alert('Project name already exists');
+  //       return;
+  //     }
 
-      // Make sure project name starts with a letter
-      if (!newProjectName.match(/^[a-zA-Z]/)) {
-        alert('Project name must start with a letter');
-        return;
-      }
+  //     // Make sure project name starts with a letter
+  //     if (!newProjectName.match(/^[a-zA-Z]/)) {
+  //       alert('Project name must start with a letter');
+  //       return;
+  //     }
 
-      // Make sure project name is alphanumeric
-      if (!newProjectName.match(/^[a-zA-Z0-9_]+$/)) {
-        alert('Project name must be alphanumeric');
-        return;
-      }
+  //     // Make sure project name is alphanumeric
+  //     if (!newProjectName.match(/^[a-zA-Z0-9_]+$/)) {
+  //       alert('Project name must be alphanumeric');
+  //       return;
+  //     }
 
-      addToIndexdb(newProjectName).then(() => {
-        getProjects();
-      });
+  //     addToIndexdb(newProjectName).then(() => {
+  //       getProjects();
+  //     });
       
-      // getProjectData(newProjectName || 'project1');
-    } else {
-      console.log('projectChange', projectChange);
+  //     // getProjectData(newProjectName || 'project1');
+  //   } else {
+  //     console.log('projectChange', projectChange);
 
-      setCurrentProject(null);
-      setCurrentModule(null);
-      setCode('');
-      setShowError(false);
-      setCompileError('');
-      setCompiledModules([]);
-      setShowTestResults(false);
-      console.log('newProject', projectChange);
-      getProjectData(projectChange);
-    }
-  }
+  //     setCurrentProject(null);
+  //     setCurrentModule(null);
+  //     setCode('');
+  //     setShowError(false);
+  //     setCompileError('');
+  //     setCompiledModules([]);
+  //     setShowTestResults(false);
+  //     console.log('newProject', projectChange);
+  //     getProjectData(projectChange);
+  //   }
+  // }
 
-  const handleProjectDelete = (projectName: string) => {
-    const removeFromIndexdb = async (projectName: string) => {
-      indexedDb = new IndexedDb('test');
-      await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-      await indexedDb.deleteValue('projects', projectName);
-    }
-    removeFromIndexdb(projectName).then(() => {
-      setCurrentProject(null);
-      setCurrentModule(null);
-      setCode('')
-      getProjects();
-      setActiveModules([]);
-      setShowError(false);
-      setCompileError('');
-      setCompiledModules([]);
-      setShowTestResults(false);
-    });
-  }
+  // const handleProjectDelete = (challenge: string) => {
+  //   const removeFromIndexdb = async (challenge: string) => {
+  //     indexedDb = new IndexedDb('quest-projects');
+  //     await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+  //     await indexedDb.deleteValue('projects', challenge);
+  //   }
+  //   removeFromIndexdb(challenge).then(() => {
+  //     // setCurrentProject(null);
+  //     setCurrentModule(undefined);
+  //     setCode('')
+  //     // getProjects();
+  //     setActiveModules([]);
+  //     setShowError(false);
+  //     setCompileError('');
+  //     setCompiledModules([]);
+  //     setShowTestResults(false);
+  //   });
+  // }
 
   const handleModuleChange = (module: string) => {
     if (module === '0') {
-      setCurrentModule(null);
+      setCurrentModule(undefined);
       setCode('')
       console.log('default');
     } else if (module.startsWith('1')) {
       console.log('addModule:', module.slice(1));
       const addModuleToIndexdb = async (newModuleName: string) => {
-        await setCurrentModule(null);
+        await setCurrentModule(undefined);
         setCode('')
-        indexedDb = new IndexedDb('test');
-        await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-        if (!currentProject) {
+        if (challengeType === undefined) {
+          throw new Error('Challenge type not set');
+        }
+        indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+        await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+        if (!challenge) {
           console.log('f')
           return;
         }
         console.log('indexdb', indexedDb);
-        console.log('currentProject', currentProject);
+        console.log('currentProject', challenge);
         console.log('currentModule', currentModule);
         console.log('code', code);
-        await indexedDb.addNewModule('projects', currentProject.package, newModuleName);
+        await indexedDb.addNewModule('projects', props.challenge, newModuleName);
       }
-      if (!currentProject) {
+      if (!challenge) {
         console.log('f')
         return;
       }
@@ -610,7 +671,7 @@ function BuildPage(props: {
         return;
       }
       addModuleToIndexdb(newModuleName).then(() => {
-        getProjectData(currentProject.package);
+        getProjectData(props.challenge);
         setActiveModules([...activeModules, newModuleName])
         setCurrentModule(newModuleName);
         setCode('');
@@ -628,7 +689,7 @@ function BuildPage(props: {
       
     } else {
       console.log('newModule', module);
-      if (!currentProject) {
+      if (!challenge) {
         console.log('f')
         return;
       }
@@ -643,15 +704,16 @@ function BuildPage(props: {
     }
   }
 
-  useEffect(() => {
-    if (!currentProject || !currentModule) {
-      console.log('f')
-      return;
-    }
+  // fix later
+  // useEffect(() => {
+  //   if (!challenge || !currentModule) {
+  //     console.log('f')
+  //     return;
+  //   }
 
-    setCode(currentProject.modules.find((m) => m.name === currentModule)?.code || '');
-    console.log('code set', code);
-  }, [currentModule])
+  //   setCode((challenge as Puzzle).templateNames.find((name, index) => name === currentModule) || '');
+  //   console.log('code set', code);
+  // }, [currentModule])
 
 
   const handleModuleDelete = (moduleName: string) => {
@@ -662,18 +724,21 @@ function BuildPage(props: {
     }
 
     const removeModuleFromIndexdb = async (moduleName: string) => {
-      indexedDb = new IndexedDb('test');
-      await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-      if (!currentProject) {
+      if (challengeType === undefined) {
+        throw new Error('Challenge type not set');
+      }
+      indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+      await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+      if (!challenge) {
         return;
       }
-      await indexedDb.deleteModule('projects', currentProject.package, moduleName);
+      await indexedDb.deleteModule('projects', props.challenge, moduleName);
     }
-    if (!currentProject) {
+    if (!challenge) {
       return;
     }
     removeModuleFromIndexdb(moduleName).then(() => {
-      getProjectData(currentProject.package);
+      getProjectData(props.challenge);
       removeActiveModuleHandler(moduleName);
     });
     // setCurrentModule(null);
@@ -699,10 +764,14 @@ function BuildPage(props: {
       return;
     }
 
-    handleProjectChange('**default');
+    // handleProjectChange('**default');
 
-    indexedDb = new IndexedDb('test');
-    await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+    if (challengeType === undefined) {
+      throw new Error('Challenge type not set');
+    }
+
+    indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+    await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
 
     await indexedDb.deleteObjectStore('projects');
 
@@ -710,65 +779,65 @@ function BuildPage(props: {
     window.location.reload();
   }
 
-  const resetDemo = async () => {
-    handleProjectChange('**default');
+  // const resetDemo = async () => {
+  //   handleProjectChange('**default');
 
-    indexedDb = new IndexedDb('test');
-    await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-    await indexedDb.deleteValue('projects', 'demoPackage');
+  //   indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+  //   await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+  //   await indexedDb.deleteValue('projects', 'demoPackage');
 
-    await indexedDb.putValue('projects', {
-          package: 'demoPackage',
-          dependencies: [
-            {name: 'demoPackage', address: '0x0'},
-            {name: 'Sui', address: '0x02'}
-          ],
-          modules: [
-            {
-              name: 'party', 
-              code: `module demoPackage::party {
+  //   await indexedDb.putValue('projects', {
+  //         package: 'demoPackage',
+  //         dependencies: [
+  //           {name: 'demoPackage', address: '0x0'},
+  //           {name: 'Sui', address: '0x02'}
+  //         ],
+  //         modules: [
+  //           {
+  //             name: 'party', 
+  //             code: `module demoPackage::party {
 
-    // Libraries being used
-    use sui::object::{Self, ID, UID};
-    use sui::transfer;
-    use sui::tx_context::TxContext;
+  //   // Libraries being used
+  //   use sui::object::{Self, ID, UID};
+  //   use sui::transfer;
+  //   use sui::tx_context::TxContext;
 
-    // Object that can be deployed
-    struct Balloon has key {
-      id: UID,
-      popped: bool
-    }
+  //   // Object that can be deployed
+  //   struct Balloon has key {
+  //     id: UID,
+  //     popped: bool
+  //   }
 
-    // Deploy a new balloon
-    fun init(ctx: &mut TxContext) {
-      new_balloon(ctx);
-    }
+  //   // Deploy a new balloon
+  //   fun init(ctx: &mut TxContext) {
+  //     new_balloon(ctx);
+  //   }
 
-    public entry fun pop_balloon(balloon: &mut Balloon) {
-      balloon.popped = true;
-    }
+  //   public entry fun pop_balloon(balloon: &mut Balloon) {
+  //     balloon.popped = true;
+  //   }
 
-    public entry fun fill_up_balloon(ctx: &mut TxContext) {
-      new_balloon(ctx);
-    }
+  //   public entry fun fill_up_balloon(ctx: &mut TxContext) {
+  //     new_balloon(ctx);
+  //   }
 
-    // Create a new balloon object and make it available to anyone
-    fun new_balloon(ctx: &mut TxContext) {
-      let balloon = Balloon{
-        id: object::new(ctx), 
-        popped: false
-      };
-      transfer::share_object(balloon);
-    }
+  //   // Create a new balloon object and make it available to anyone
+  //   fun new_balloon(ctx: &mut TxContext) {
+  //     let balloon = Balloon{
+  //       id: object::new(ctx), 
+  //       popped: false
+  //     };
+  //     transfer::share_object(balloon);
+  //   }
             
-  }`
-            }
-          ]
-        }); 
-  }
+  // }`
+  //           }
+  //         ]
+  //       }); 
+  // }
 
   const addActiveModulesHandler = (moduleName: string) => {
-    if (!currentProject) {
+    if (!challenge) {
       return;
     }
 
@@ -785,7 +854,7 @@ function BuildPage(props: {
   }
 
   const removeActiveModuleHandler = async (moduleName: string) => {
-    if (!currentProject) {
+    if (!challenge) {
       return;
     }
 
@@ -805,13 +874,13 @@ function BuildPage(props: {
       <PageLayout
         header={
           <Header 
-            resetDemo={resetDemo}
+            // resetDemo={resetDemo}
             resetCache={resetCache}
           />
         }
         innerSidebar={
           <BuildInnerSidebar
-            currentProject={currentProject}
+            currentProject={challenge}
             currentModule={currentModule}
             compileCode={compileCode} 
             testProject={testProject}
@@ -820,9 +889,9 @@ function BuildPage(props: {
             // activeModules={activeModules}
             addActiveModules={addActiveModulesHandler}
             
-            title={title}
-            objective={objective}
-            instructions={instructions}
+            title={challengeConfig?.name || ''}
+            objective={challengeConfig?.objective || ''}
+            instructions={challengeConfig?.instructions || []}
             
             // tutorialSteps={steps}
             // tutorialCallback={tutorialCallback}
@@ -843,7 +912,7 @@ function BuildPage(props: {
         }
         canvas={
           <BuildCanvas 
-            currentProject={currentProject} 
+            currentProject={challenge} 
             currentModule={currentModule}
             compiledModules={compiledModules}
             compileError={compileError}

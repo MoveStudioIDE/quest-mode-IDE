@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Challenge, Puzzle } from "../pages/BuildPage";
 import { Dependency, Module, Project } from "../types/project-types";
 
 function BuildInnerSidebar(
@@ -6,25 +7,27 @@ function BuildInnerSidebar(
     compileCode: () => void,
     testProject: () => void,
     addActiveModules: (module: string) => void,
-    currentProject: Project | null,
-    currentModule: string | null,
+    currentProject: Challenge | undefined,
+    currentModule: string | undefined,
 
 
     title: string, 
     objective: string,
-    instructions: string[],
+    instructions: string[] | string[][],
   }
 ) {
 
   //---Helper---//
 
-  const tableModules = props.currentProject?.modules.map((module: Module) => {
+  const tableModules = props.currentProject?.templates.map((template: string, index: number) => {
+    const templateName = (props.currentProject as Puzzle).templateNames[index];
+
     return (
       <tr 
         className="hover cursor-pointer"
         onClick={() => {
-          console.log('module.name in row click', module.name)
-          props.addActiveModules(module.name)
+          console.log('module.name in row click', templateName)
+          props.addActiveModules(templateName)
         }}
       >
         <td className="pr-0">
@@ -41,7 +44,7 @@ function BuildInnerSidebar(
           >
             {/* TODO: Eventually get this to work with wrapping, not truncating */}
             {/* {shortenWord(module.name, 17)}{module.name.length < 18 ? ".move" : ""} */}
-            {module.name}.move
+            {templateName}.move
           </p>
         </td>
       </tr>

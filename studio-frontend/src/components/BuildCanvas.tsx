@@ -7,6 +7,7 @@ import fs from 'fs';
 import Ansi from "ansi-to-react";
 import stripAnsi from 'strip-ansi';
 import { shortenWord } from "../utils/address-shortener";
+import { Challenge } from "../pages/BuildPage";
 // import * as editorThemeJsons from "../utils/themes.json"
 const editorThemeJsons = require('../utils/themes.json')
 
@@ -46,8 +47,8 @@ const editorTheme = {
 function BuildCanvas(
   props: {
     code: string,
-    currentProject: Project | null,
-    currentModule: string | null,
+    currentProject: Challenge | undefined,
+    currentModule: string | undefined,
     compiledModules: string[],
     compileError: string,
     testResults: string,

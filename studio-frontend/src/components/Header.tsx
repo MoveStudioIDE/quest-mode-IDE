@@ -45,7 +45,7 @@ import bugIcon from "../icons/insect-30.png"
 function Header(
   props: {
     resetCache: () => void;
-    resetDemo: () => void;
+    // resetDemo: () => void;
   }
 ) {
 
@@ -110,10 +110,10 @@ function Header(
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="arcs"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
               Run tutorial
             </a></li> */}
-            <li><a onClick={props.resetDemo}>
+            {/* <li><a onClick={props.resetDemo}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="arcs"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"/></svg>
               Reset demo project
-            </a></li>
+            </a></li> */}
             <li><a onClick={props.resetCache}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="arcs"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
               Reset IDE
