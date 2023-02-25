@@ -5,27 +5,16 @@ import dotenv from 'dotenv';
 import axios from 'axios';
 // import stripAnsi from 'strip-ansi';
 
+const MOCK_TEST_MODULE = `module overmind::birthday_bot_test {
 
+  #[test]
+  fun test() {
+    
+  }
+}`
 
 const TEMP_DIR = `${__dirname}/../temp-packages`;
 
-// const exampleModule = fs.readFileSync(`${__dirname}/example.move`, 'utf8');
-
-// const exampleProject = {
-//   package: 'test',
-//   modules: [
-//     {
-//       name: 'test',
-//       code: exampleModule,
-//     },
-//   ],
-//   dependencies: [
-//     {
-//       name: 'Sui',
-//       address: '0x2',
-//     },
-//   ],
-// };
 
 function makeRandString(length: number) {
   let result = '';
@@ -65,12 +54,16 @@ export async function compile(project: Project): Promise<CompileReturn> {
   });
 
   // NOTE: remove line in addresses once it is a default dependency in the FE
+  // NOTE: I replaced the two dependencies with the ones used in the overmind repo 
+  //        This was the old one: AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
+
   const toml = `
     [package]
     name = "${project.package}"
     version = "0.0.1"
     [dependencies]
-    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
+    MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
+    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
     [addresses]
     ${addresses}
   `;
@@ -141,6 +134,9 @@ export async function testPackage(project: Project): Promise<TestReturn> {
     fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code.toString());
   });
 
+  // Add the test module to the project directory
+  fs.writeFileSync(`${tempProjectSourcesPath}/birthday_bot_test.move`, MOCK_TEST_MODULE);
+
   // Create toml file based on the project's dependencies and project name
   let addresses = '';
   project.dependencies.forEach((dependency) => {
@@ -153,7 +149,8 @@ export async function testPackage(project: Project): Promise<TestReturn> {
     name = "${project.package}"
     version = "0.0.1"
     [dependencies]
-    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main"  }
+    MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
+    AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
     [addresses]
     ${addresses}
   `;
@@ -187,7 +184,8 @@ export async function testPackage(project: Project): Promise<TestReturn> {
 
   } catch (error: any) { // Error is caught if compile or tests fail
 
-    const errorMessage = error.stdout;
+    const errorMessageToIgnore = error.stdout;
+    const errorMessage = error.stderr.replace(errorMessageToIgnore, '');
 
     // Remove the temporary project directory
     fs.rmdirSync(tempProjectPath, { recursive: true });
