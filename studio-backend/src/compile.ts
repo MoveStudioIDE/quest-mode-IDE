@@ -43,14 +43,8 @@ export async function compile(project: Project): Promise<CompileReturn> {
   fs.mkdirSync(tempProjectSourcesPath, { recursive: true });
 
   // Add the module files to the project's sources directory
-  project.modules.forEach((module) => {
+  project.templates.forEach((module) => {
     fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code);
-  });
-
-  // Create toml file based on the project's dependencies and project name
-  let addresses = '';
-  project.dependencies.forEach((dependency) => {
-    addresses += `${dependency.name} = "${dependency.address}"\n`;
   });
 
   // NOTE: remove line in addresses once it is a default dependency in the FE
@@ -65,7 +59,7 @@ export async function compile(project: Project): Promise<CompileReturn> {
     MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
     AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
     [addresses]
-    ${addresses}
+    
   `;
 
   fs.writeFileSync(
@@ -130,18 +124,12 @@ export async function testPackage(project: Project): Promise<TestReturn> {
   fs.mkdirSync(tempProjectSourcesPath, { recursive: true });
 
   // Add the module files to the project's sources directory
-  project.modules.forEach((module) => {
+  project.templates.forEach((module) => {
     fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code.toString());
   });
 
   // Add the test module to the project directory
   fs.writeFileSync(`${tempProjectSourcesPath}/birthday_bot_test.move`, MOCK_TEST_MODULE);
-
-  // Create toml file based on the project's dependencies and project name
-  let addresses = '';
-  project.dependencies.forEach((dependency) => {
-    addresses += `${dependency.name} = "${dependency.address}"\n`;
-  });
 
   // NOTE: remove line in addresses once it is a default dependency in the FE
   const toml = `
@@ -152,7 +140,6 @@ export async function testPackage(project: Project): Promise<TestReturn> {
     MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
     AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "093b497d1267715a222845aad4fd3ca59da90e8d" }
     [addresses]
-    ${addresses}
   `;
 
   fs.writeFileSync(
