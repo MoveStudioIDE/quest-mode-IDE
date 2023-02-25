@@ -240,7 +240,7 @@ function BuildCanvas(
         onClick={() => props.changeModule(moduleName)}
         style={{display: "flex", alignItems: "center", flexWrap: "nowrap"}}
       >
-        {shortenWord(moduleName, 15)}.move
+        {shortenWord(moduleName, 15)}
         {
           props.currentModule === moduleName &&
           <label 

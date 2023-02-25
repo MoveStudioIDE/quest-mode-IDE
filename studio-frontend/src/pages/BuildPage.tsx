@@ -12,184 +12,7 @@ import Joyride from 'react-joyride';
 import {SPINNER_COLORS} from "../utils/theme";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import Module from "module";
-
-// const puzzles = {
-//   Birthday_Bot: {
-//     title: 'Birthday Bot',
-//     objective: 'Create a Move program that will wish a happy birthday to a friend.',
-//     instructions: [
-//       'Create a new Move program called birthday.move',
-//       'Create a new resource called BirthdayBot',
-//       'Create a new function called wish_birthday',
-//       'Create a new function called main',
-//       'Create a new resource called BirthdayBot',
-//       'Create a new function called wish_birthday',
-//       'Create a new function called main',
-//       'Create a new resource called BirthdayBot',
-//     ], 
-//     package: 'overmind',
-//     modules: [
-//       {
-//         name: 'birthday_bot',
-//         code: `module overmind::birthday_bot {
-//     use aptos_std::table::Table;
-//     use std::signer;
-//     use std::error;
-//     use aptos_framework::account;
-//     use std::vector;
-//     use aptos_framework::coin;
-//     use aptos_framework::aptos_coin::AptosCoin;
-//     use aptos_std::table;
-//     use aptos_framework::timestamp;
-
-//     //
-//     // Errors
-//     //
-//     const ERROR_DISTRIBUTION_STORE_EXIST: u64 = 0;
-//     const ERROR_DISTRIBUTION_STORE_DOES_NOT_EXIST: u64 = 1;
-//     const ERROR_LENGTHS_NOT_EQUAL: u64 = 2;
-//     const ERROR_BIRTHDAY_GIFT_DOES_NOT_EXIST: u64 = 3;
-//     const ERROR_BIRTHDAY_TIMESTAMP_SECONDS_HAS_NOT_PASSED: u64 = 4;
-
-//     //
-//     // Data structures
-//     //
-//     struct BirthdayGift has drop, store {
-//         amount: u64,
-//         birthday_timestamp_seconds: u64,
-//     }
-
-//     struct DistributionStore has key {
-//         owner: address,
-//         birthday_gifts: Table<address, BirthdayGift>,
-//         signer_capability: account::SignerCapability,
-//     }
-
-//     //
-//     // Assert functions
-//     //
-//     public fun assert_distribution_store_exists(
-//         account_address: address,
-//     ) {
-//         // TODO: assert that \`DistributionStore\` exists
-//     }
-
-//     public fun assert_distribution_store_does_not_exist(
-//         account_address: address,
-//     ) {
-//         // TODO: assert that \`DistributionStore\` does not exist
-//     }
-
-//     public fun assert_lengths_are_equal(
-//         addresses: vector<address>,
-//         amounts: vector<u64>,
-//         timestamps: vector<u64>
-//     ) {
-//         // TODO: assert that the lengths of \`addresses\`, \`amounts\`, and \`timestamps\` are all equal
-//     }
-
-//     public fun assert_birthday_gift_exists(
-//         distribution_address: address,
-//         address: address,
-//     ) acquires DistributionStore {
-//         // TODO: assert that \`birthday_gifts\` exists
-//     }
-
-//     public fun assert_birthday_timestamp_seconds_has_passed(
-//         distribution_address: address,
-//         address: address,
-//     ) acquires DistributionStore {
-//         // TODO: assert that the current timestamp is greater than or equal to \`birthday_timestamp_seconds\`
-//     }
-
-//     //
-//     // Entry functions
-//     //
-//     /**
-//     * Initializes birthday gift distribution contract
-//     * @param account - account signer executing the function
-//     * @param addresses - list of addresses that can claim their birthday gifts
-//     * @param amounts  - list of amounts for birthday gifts
-//     * @param birthday_timestamps - list of birthday timestamps in seconds (only claimable after this timestamp has passed)
-//     **/
-//     public entry fun initialize_distribution(
-//         account: &signer,
-//         addresses: vector<address>,
-//         amounts: vector<u64>,
-//         birthday_timestamps: vector<u64>
-//     ) {
-//         // TODO: check \`DistributionStore\` does not exist
-
-//         // TODO: check all lengths of \`addresses\`, \`amounts\`, and \`birthday_timestamps\` are equal
-
-//         // TODO: create resource account
-
-//         // TODO: register Aptos coin to resource account
-
-//         // TODO: loop through the lists and push items to birthday_gifts table
-
-//         // TODO: transfer the sum of all items in \`amounts\` from initiator to resource account
-
-//         // TODO: move_to resource \`DistributionStore\` to account signer
-//     }
-
-//     /**
-//     * Add birthday gift to \`DistributionStore.birthday_gifts\`
-//     * @param account - account signer executing the function
-//     * @param address - address that can claim the birthday gift
-//     * @param amount  - amount for the birthday gift
-//     * @param birthday_timestamp_seconds - birthday timestamp in seconds (only claimable after this timestamp has passed)
-//     **/
-//     public entry fun add_birthday_gift(
-//         account: &signer,
-//         address: address,
-//         amount: u64,
-//         birthday_timestamp_seconds: u64
-//     ) acquires DistributionStore {
-//         // TODO: check that the distribution store exists
-
-//         // TODO: set new birthday gift to new \`amount\` and \`birthday_timestamp_seconds\` (birthday_gift already exists, sum \`amounts\` and override the \`birthday_timestamp_seconds\`
-
-//         // TODO: transfer the \`amount\` from initiator to resource account
-//     }
-
-//     /**
-//     * Remove birthday gift from \`DistributionStore.birthday_gifts\`
-//     * @param account - account signer executing the function
-//     * @param address - \`birthday_gifts\` address
-//     **/
-//     public entry fun remove_birthday_gift(
-//         account: &signer,
-//         address: address,
-//     ) acquires DistributionStore {
-//         // TODO: check that the distribution store exists
-
-//         // TODO: if \`birthday_gifts\` exists, remove \`birthday_gift\` from table and transfer \`amount\` from resource account to initiator
-//     }
-
-//     /**
-//     * Claim birthday gift from \`DistributionStore.birthday_gifts\`
-//     * @param account - account signer executing the function
-//     * @param distribution_address - distribution contract address
-//     **/
-//     public entry fun claim_birthday_gift(
-//         account: &signer,
-//         distribution_address: address,
-//     ) acquires DistributionStore {
-//         // TODO: check that the distribution store exists
-
-//         // TODO: check that the \`birthday_gift\` exists
-
-//         // TODO: check that the \`birthday_timestamp_seconds\` has passed
-
-//         // TODO: remove \`birthday_gift\` from table and transfer \`amount\` from resource account to initiator
-//     }
-// }`
-//       },
-//     ]
-//   }
-// } as { [key: string]: { title: string, objective: string, instructions: string[], package: string, modules: {}[] } }
-
+import {Buffer} from 'buffer';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:80/';
 
@@ -239,46 +62,62 @@ function BuildPage(props: {
   const [challengeType, setChallengeType] = useState<CHALLENGE_TYPE>();
   const [challengeConfig, setChallengeConfig] = useState<ChallengeConfig>();
 
-  // Initialize indexedDb
-  let indexedDb: IndexedDb;
   useEffect(() => {
-
-    if (props.challenge.split('%').length !== 2) {
-      throw new Error('Invalid challenge');
-    }
-
-    if (props.challenge.split('%')[0].toLowerCase() === 'puzzle') {
+    const challengeType1 = props.challenge.split('%')[0].toLowerCase();
+    if (challengeType1 === 'puzzle') {
       setChallengeType(CHALLENGE_TYPE.puzzle);
-    } else if (props.challenge.split('%')[0].toLowerCase() === 'quest') {
+    } else if (challengeType1 === 'quest') {
       setChallengeType(CHALLENGE_TYPE.quest);
     } else {
-      throw new Error('Invalid challenge type');
+      return
     }
+  }, [props.challenge]);
 
-    const challengeName = props.challenge.split('%')[1];
+  // Initialize indexedDb
+  let indexedDb: IndexedDb;
+  useEffect(() => {    
 
     // Retrieve challenge data from backend
     const getChallengConfigeData = async () => {
-      if (challengeType === undefined) {
-        throw new Error('Challenge type not set');
+      
+      const challengeName = props.challenge.split('%')[1];
+      const challengeType1 = props.challenge.split('%')[0].toLowerCase();
+      console.log(`Challenge name: ${challengeName}`);
+      console.log(`Challenge type: ${challengeType1}`);
+
+      if (challengeType1 === 'puzzle') {
+        await setChallengeType(CHALLENGE_TYPE.puzzle);
+      } else if (challengeType1 === 'quest') {
+        await setChallengeType(CHALLENGE_TYPE.quest);
+      } else {
+        return
       }
 
-      const res = await axios.get(`${BACKEND_URL}challenge/config?type=${CHALLENGE_TYPE[challengeType]}&name=${challengeName}`); // Figure out this with evan
-      let challengeConfigData;
-      if (challengeType === CHALLENGE_TYPE.puzzle) {
-        challengeConfigData = res.data as PuzzleConfig;
-      } else if (challengeType === CHALLENGE_TYPE.quest){
-        challengeConfigData = res.data as QuestConfig;
-      } else {
-        throw new Error('Challenge type not set');
+      console.log(`Challenge type: ${challengeType}`)
+
+      if (challengeType === undefined) {
+        return
       }
+
+      const res = await axios.get(`${BACKEND_URL}config?type=${CHALLENGE_TYPE[challengeType]}&name=${challengeName}`); // Figure out this with evan
+      let challengeConfigData;
+      console.log('res.data.config', res.data.config)
+      const challengeConfigDataEncoded = Buffer.from(res.data.config, 'base64');
+      if (challengeType === CHALLENGE_TYPE.puzzle) {
+        challengeConfigData = JSON.parse(challengeConfigDataEncoded.toString()) as PuzzleConfig;
+      } else if (challengeType === CHALLENGE_TYPE.quest){
+        challengeConfigData = JSON.parse(challengeConfigDataEncoded.toString()) as QuestConfig;
+      } else {
+        return
+      }
+      console.log('challengeConfigData', challengeConfigData);
       setChallengeConfig(challengeConfigData);
     }
 
     const initializeIndexedDb = async () => {
 
       if (challengeType === undefined) {
-        throw new Error('Challenge type not set');
+        return
       }
 
       indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
@@ -290,17 +129,37 @@ function BuildPage(props: {
         console.log('setting user');
         localStorage.setItem(props.challenge, 'true');
         
-        const res = await axios.get(`${BACKEND_URL}challenge/template?type=${CHALLENGE_TYPE[challengeType]}&name=${challengeName}`); // Figure out this with evan
-        const templatesBase64 = res.data as string[];
-        const templates = templatesBase64.map((template) => (Buffer.from(template).toString('base64')));
+        const res = await axios.get(`${BACKEND_URL}templates?type=${CHALLENGE_TYPE[challengeType]}&name=${challengeName}`); // Figure out this with evan
+        const templatesBase64 = res.data as {templates: string[], templateNames: string[]};
+        console.log('templatesBase64', templatesBase64)
+        const decodedTemplates = templatesBase64.templates.map((template) => (Buffer.from(template, 'base64').toString()));
         
         await indexedDb.putValue('challenges', {
           challenge: props.challenge,
-          templates: templates,
+          templates: decodedTemplates,
+          templateNames: templatesBase64.templateNames,
         }); 
       }
          
     }
+
+    if (props.challenge.split('%').length !== 2) {
+      throw new Error('Invalid challenge');
+    }
+
+    const challengeName = props.challenge.split('%')[1];
+    const challengeType1 = props.challenge.split('%')[0].toLowerCase();
+    console.log(`Challenge name: ${challengeName}`);
+    console.log(`Challenge type: ${challengeType1}`);
+
+    if (challengeType1 === 'puzzle') {
+      setChallengeType(CHALLENGE_TYPE.puzzle);
+    } else if (challengeType1 === 'quest') {
+      setChallengeType(CHALLENGE_TYPE.quest);
+    } else {
+      return
+    }
+
 
     getChallengConfigeData().then(() => {
       initializeIndexedDb().then(() => {
@@ -308,7 +167,7 @@ function BuildPage(props: {
       });
     });
 
-  }, []);
+  }, [challengeType]);
 
   const [code, setCode] = useState('');
 
@@ -322,18 +181,13 @@ function BuildPage(props: {
   const [showTestResults, setShowTestResults] = useState(false);
 
   const [activeModules, setActiveModules] = useState<string[]>([]);
-
-  // const [title, setTitle] = useState<string>('');
-  // const [objective, setObjective] = useState<string>('');
-  // const [instructions, setInstructions] = useState<string[]>([]);
-
   
 
   //---Helpers---//
 
   const getProjectData = async (project: string) => {
     if (challengeType === undefined) {
-      throw new Error('Challenge type not set');
+      return
     }
     indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
     await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
@@ -488,22 +342,15 @@ function BuildPage(props: {
         </div>
       )
 
-      // setCompiledModules(compileResults);
-      // setCompileError('');
     });
 
 
-    // console.log('herhererere')
-    // if (runTutorial && stepIndex === 5) {
-    //   console.log('setting step 6')
-    //   setStepIndex(6);
-    // }
   }
 
   useEffect(() => {
     if (challenge && challenge.templates.length > 0 && currentModule == null && activeModules.length == 0) {
-      setActiveModules([(challenge as Puzzle).templates[0]])
-      setCurrentModule((challenge as Puzzle).templates[0]);
+      setActiveModules([(challenge as Puzzle).templateNames[0]])
+      setCurrentModule((challenge as Puzzle).templateNames[0]);
     }
   }, [challenge]);
   
@@ -513,7 +360,7 @@ function BuildPage(props: {
   const handleNewCode = (newCode: string, module: string) => {
     const updateModuleInIndexdb = async (newCode: string) => {
       if (challengeType === undefined) {
-        throw new Error('Challenge type not set');
+        return
       }
       indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
       await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
@@ -535,9 +382,6 @@ function BuildPage(props: {
     console.log('currentModule', currentModule);
     console.log('module to update', module);
 
-    // setCompileError('');
-    // setToast(undefined);
-    // setCompiledModules([]);
 
 
     updateModuleInIndexdb(newCode).then(() => {
@@ -547,94 +391,6 @@ function BuildPage(props: {
     });
     setCode(newCode);
   }
-
-
-  // const handleProjectChange = (projectChange: string) => {
-  //   setActiveModules([]);
-  //   if (projectChange === '**default') {
-  //     setCurrentProject(null);
-  //     setCurrentModule(null);
-  //     setCode('')
-  //     console.log('default');
-  //   } else if (projectChange === '**addProject') {
-
-  //     setCurrentProject(null);
-  //     setCurrentModule(null);
-  //     setCode('');
-  //     console.log('addProject');
-  //     const addToIndexdb = async (newProjectName: string) => {
-  //       indexedDb = new IndexedDb('quest-projects');
-  //       await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-  //       await indexedDb.putValue('projects', {
-  //         package: newProjectName,
-  //         dependencies: [
-  //           {name: newProjectName, address: '0x0'},
-  //           {name: 'Sui', address: '0x02'}
-  //         ],
-  //         modules: []
-  //       });
-  //     }
-  //     const newProjectName = prompt('Enter project name');
-  //     if (!newProjectName) {
-  //       return;
-  //     }
-
-  //     // Make sure project name is unique
-  //     if (projectList.includes(newProjectName)) {
-  //       alert('Project name already exists');
-  //       return;
-  //     }
-
-  //     // Make sure project name starts with a letter
-  //     if (!newProjectName.match(/^[a-zA-Z]/)) {
-  //       alert('Project name must start with a letter');
-  //       return;
-  //     }
-
-  //     // Make sure project name is alphanumeric
-  //     if (!newProjectName.match(/^[a-zA-Z0-9_]+$/)) {
-  //       alert('Project name must be alphanumeric');
-  //       return;
-  //     }
-
-  //     addToIndexdb(newProjectName).then(() => {
-  //       getProjects();
-  //     });
-      
-  //     // getProjectData(newProjectName || 'project1');
-  //   } else {
-  //     console.log('projectChange', projectChange);
-
-  //     setCurrentProject(null);
-  //     setCurrentModule(null);
-  //     setCode('');
-  //     setShowError(false);
-  //     setCompileError('');
-  //     setCompiledModules([]);
-  //     setShowTestResults(false);
-  //     console.log('newProject', projectChange);
-  //     getProjectData(projectChange);
-  //   }
-  // }
-
-  // const handleProjectDelete = (challenge: string) => {
-  //   const removeFromIndexdb = async (challenge: string) => {
-  //     indexedDb = new IndexedDb('quest-projects');
-  //     await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-  //     await indexedDb.deleteValue('projects', challenge);
-  //   }
-  //   removeFromIndexdb(challenge).then(() => {
-  //     // setCurrentProject(null);
-  //     setCurrentModule(undefined);
-  //     setCode('')
-  //     // getProjects();
-  //     setActiveModules([]);
-  //     setShowError(false);
-  //     setCompileError('');
-  //     setCompiledModules([]);
-  //     setShowTestResults(false);
-  //   });
-  // }
 
   const handleModuleChange = (module: string) => {
     if (module === '0') {
@@ -647,7 +403,7 @@ function BuildPage(props: {
         await setCurrentModule(undefined);
         setCode('')
         if (challengeType === undefined) {
-          throw new Error('Challenge type not set');
+          return
         }
         indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
         await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
@@ -705,15 +461,22 @@ function BuildPage(props: {
   }
 
   // fix later
-  // useEffect(() => {
-  //   if (!challenge || !currentModule) {
-  //     console.log('f')
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!challenge || !currentModule) {
+      console.log('f')
+      return;
+    }
 
-  //   setCode((challenge as Puzzle).templateNames.find((name, index) => name === currentModule) || '');
-  //   console.log('code set', code);
-  // }, [currentModule])
+    for (let i = 0; i < (challenge as Puzzle).templateNames.length; i++) {
+      if ((challenge as Puzzle).templateNames[i] === currentModule) {
+        setCode((challenge as Puzzle).templates[i]);
+        return;
+      }
+    }
+
+    setCode('');
+    console.log('code set', code);
+  }, [currentModule])
 
 
   const handleModuleDelete = (moduleName: string) => {
@@ -725,7 +488,7 @@ function BuildPage(props: {
 
     const removeModuleFromIndexdb = async (moduleName: string) => {
       if (challengeType === undefined) {
-        throw new Error('Challenge type not set');
+        return
       }
       indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
       await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
@@ -749,11 +512,6 @@ function BuildPage(props: {
     setShowTestResults(false);
     // Remove form active modules
     // setActiveModules(activeModules.filter((m) => m !== moduleName));
-
-
-    // if (runTutorial && stepIndex === 5) {
-    //   setStepIndex(6);
-    // }
   }
 
   const resetCache = async () => {
@@ -767,7 +525,7 @@ function BuildPage(props: {
     // handleProjectChange('**default');
 
     if (challengeType === undefined) {
-      throw new Error('Challenge type not set');
+      return
     }
 
     indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
@@ -778,63 +536,6 @@ function BuildPage(props: {
     localStorage.clear();
     window.location.reload();
   }
-
-  // const resetDemo = async () => {
-  //   handleProjectChange('**default');
-
-  //   indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
-  //   await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-  //   await indexedDb.deleteValue('projects', 'demoPackage');
-
-  //   await indexedDb.putValue('projects', {
-  //         package: 'demoPackage',
-  //         dependencies: [
-  //           {name: 'demoPackage', address: '0x0'},
-  //           {name: 'Sui', address: '0x02'}
-  //         ],
-  //         modules: [
-  //           {
-  //             name: 'party', 
-  //             code: `module demoPackage::party {
-
-  //   // Libraries being used
-  //   use sui::object::{Self, ID, UID};
-  //   use sui::transfer;
-  //   use sui::tx_context::TxContext;
-
-  //   // Object that can be deployed
-  //   struct Balloon has key {
-  //     id: UID,
-  //     popped: bool
-  //   }
-
-  //   // Deploy a new balloon
-  //   fun init(ctx: &mut TxContext) {
-  //     new_balloon(ctx);
-  //   }
-
-  //   public entry fun pop_balloon(balloon: &mut Balloon) {
-  //     balloon.popped = true;
-  //   }
-
-  //   public entry fun fill_up_balloon(ctx: &mut TxContext) {
-  //     new_balloon(ctx);
-  //   }
-
-  //   // Create a new balloon object and make it available to anyone
-  //   fun new_balloon(ctx: &mut TxContext) {
-  //     let balloon = Balloon{
-  //       id: object::new(ctx), 
-  //       popped: false
-  //     };
-  //     transfer::share_object(balloon);
-  //   }
-            
-  // }`
-  //           }
-  //         ]
-  //       }); 
-  // }
 
   const addActiveModulesHandler = (moduleName: string) => {
     if (!challenge) {
@@ -865,9 +566,6 @@ function BuildPage(props: {
       await handleModuleChange(newActiveModules[0]);
     }
   }
-
-
-
 
   return (
     <div className="tutorial-header">

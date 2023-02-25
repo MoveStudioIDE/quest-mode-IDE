@@ -44,7 +44,7 @@ function BuildInnerSidebar(
           >
             {/* TODO: Eventually get this to work with wrapping, not truncating */}
             {/* {shortenWord(module.name, 17)}{module.name.length < 18 ? ".move" : ""} */}
-            {templateName}.move
+            {templateName}
           </p>
         </td>
       </tr>
