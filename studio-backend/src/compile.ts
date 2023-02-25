@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
-import { Project } from './schema/user-schema';
+import { CompileReturn, Project, SubmitReturn, TestReturn } from './types';
 import dotenv from 'dotenv';
 import axios from 'axios';
 // import stripAnsi from 'strip-ansi';
@@ -26,25 +26,6 @@ const TEMP_DIR = `${__dirname}/../temp-packages`;
 //     },
 //   ],
 // };
-
-type CompileReturn = {
-  compiledModules: string[];
-  errorCode: string;
-  error: boolean;
-}
-
-type TestReturn = {
-  result: string;
-  errorCode: string;
-  error: boolean;
-}
-
-type SubmitReturn = {
-  user: string;
-  result: string;
-  errorCode: string;
-  error: boolean;
-}
 
 function makeRandString(length: number) {
   let result = '';
@@ -157,7 +138,7 @@ export async function testPackage(project: Project): Promise<TestReturn> {
 
   // Add the module files to the project's sources directory
   project.modules.forEach((module) => {
-    fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code);
+    fs.writeFileSync(`${tempProjectSourcesPath}/${module.name}.move`, module.code.toString());
   });
 
   // Create toml file based on the project's dependencies and project name

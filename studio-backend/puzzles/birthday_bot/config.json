@@ -1,0 +1,15 @@
+{
+    "name": "Birthday Bot",
+    "objective": "Create a Move program that will wish a happy birthday to a friend.",
+    "instructions": [
+        "Create a new Move program called birthday.move",
+        "Create a new resource called BirthdayBot",
+        "Create a new function called wish_birthday",
+        "Create a new function called main",
+        "Create a new resource called BirthdayBot",
+        "Create a new function called wish_birthday",
+        "Create a new function called main",
+        "Create a new resource called BirthdayBot"
+    ],
+    "description": "Wish a friend a happy birthday!"
+}
