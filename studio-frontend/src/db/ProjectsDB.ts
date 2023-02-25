@@ -92,10 +92,11 @@ export class IndexedDb {
     const tx = this.db.transaction(tableName, 'readwrite');
     const store = tx.objectStore(tableName);
     const result = await store.get(project);
-    const modules = result.modules;
-    for (let i = 0; i < modules.length; i++) {
-      if (modules[i].name === moduleName) {
-        modules[i].code = code;
+    const templates = result.templates;
+    const templateNames = result.templateNames;
+    for (let i = 0; i < templates.length; i++) {
+      if (templateNames[i] === moduleName) {
+        templates[i] = code;
         break;
       }
     }
