@@ -226,7 +226,7 @@ function BuildPage(props: {
 
     console.log('compiling with backend: ', BACKEND_URL);
 
-    axios.post(`${BACKEND_URL}compile`, props.challenge).then((res) => {
+    axios.post(`${BACKEND_URL}compile`, challenge).then((res) => {
       const compileResults = res.data as {
         compiledModules: string[];
         errorCode: string;
