@@ -47,7 +47,10 @@ app.get('/challenge', async (req, res) => {
   const type = req.query.type as ChallengeType;
   const name = req.query.name as string;
   const challenge = getChallenge(type, name);
-  res.send(challenge);
+  res.send({
+    templates: challenge.modules.map((module) => module.code.toString('base64')),
+    config: challenge.config.toString("base64")
+  });
 });
 
 app.post('/compile', async (req, res) => {
