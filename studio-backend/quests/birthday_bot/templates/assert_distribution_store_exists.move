@@ -1,4 +1,4 @@
-{
+
     //
     // Assert functions
     //
@@ -7,4 +7,3 @@
     ) {
         // TODO: assert that `DistributionStore` exists
     }
-}

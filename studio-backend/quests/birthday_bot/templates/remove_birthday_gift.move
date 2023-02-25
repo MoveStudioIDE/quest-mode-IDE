@@ -1,4 +1,4 @@
-{
+
     /**
     * Remove birthday gift from `DistributionStore.birthday_gifts`
     * @param account - account signer executing the function
@@ -12,4 +12,3 @@
 
         // TODO: if `birthday_gifts` exists, remove `birthday_gift` from table and transfer `amount` from resource account to initiator
     }
-}

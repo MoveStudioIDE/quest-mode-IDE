@@ -1,4 +1,4 @@
-{
+
     /**
     * Add birthday gift to `DistributionStore.birthday_gifts`
     * @param account - account signer executing the function
@@ -18,4 +18,3 @@
 
         // TODO: transfer the `amount` from initiator to resource account
     }
-}

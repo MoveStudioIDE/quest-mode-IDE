@@ -1,4 +1,4 @@
-{
+
     //
     // Entry functions
     //
@@ -29,4 +29,3 @@
 
         // TODO: move_to resource `DistributionStore` to account signer
     }
-}

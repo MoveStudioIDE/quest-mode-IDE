@@ -34,19 +34,19 @@ module overmind::birthday_bot {
 
     //assert_distribution_store_exists
 
-    //1
+    //assert_distribution_store_does_not_exist
 
-    //2
+    //assert_lengths_are_equal
 
-    //3
+    //assert_birthday_gift_exists
 
-    //4
+    //assert_birthday_timestamp_seconds_has_passed
 
-    //5
+    //initialize_distribution
 
-    //6
+    //add_birthday_gift
 
-    //7
+    //remove_birthday_gift
 
-    //8
+    //claim_birthday_gift
 }
