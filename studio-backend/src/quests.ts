@@ -6,7 +6,11 @@ export function getPlaceholder(questDir: string): Buffer{
     return fs.readFileSync(questDir+`/placeholder.move`)
 }
 
-export function assembleQuest(templates: Template[], questDir: string, outputFile: string){
+export function assembleQuest(templates: Template[], questName: string, questDir: string, tempDir: string){
+    if(!fs.existsSync(tempDir+"/sources")){
+        fs.mkdirSync(tempDir+"/sources/", {recursive: true})
+    }
+
     let tempStrs = templates.map((t) => t.code.toString());
     const tempNames = templates.map((t) => t.name.slice(0, t.name.length-5));
 
@@ -17,7 +21,7 @@ export function assembleQuest(templates: Template[], questDir: string, outputFil
         assembled = assembled.replace(`//${tempNames[i]}`, tempStrs[i])
     }
 
-    fs.writeFileSync(outputFile, assembled)
+    fs.writeFileSync(tempDir+`/sources/${questName}.move`, assembled)
 }   
 
 export function transferQuestTests(templates: Template[], questDir: string, tempDir: string){
@@ -25,7 +29,6 @@ export function transferQuestTests(templates: Template[], questDir: string, temp
     const tempNames = templates.map((t) => t.name.slice(0, t.name.length-5));
 
     if(!fs.existsSync(tempDir+"/sources")){
-        console.log("Making")
         fs.mkdirSync(tempDir+"/sources/", {recursive: true})
     }
 
@@ -35,5 +38,4 @@ export function transferQuestTests(templates: Template[], questDir: string, temp
             fs.copyFileSync(questDir+`/tests/${testName}`, tempDir+`/sources/${testName}`);
         }
     }
-
 }
