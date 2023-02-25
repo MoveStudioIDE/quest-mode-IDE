@@ -368,7 +368,7 @@ function BuildPage(props: {
         console.log('f')
         return;
       }
-      await indexedDb.updateModule('projects', props.challenge, currentModule, newCode);
+      await indexedDb.updateModule('challenges', props.challenge, currentModule, newCode);
     }
     if (!challenge || !currentModule) {
       console.log('f')
