@@ -14,6 +14,10 @@ export function getChallenge(type: ChallengeType, challengeName: string): Challe
     return challenge
 }
 
+export function transferChallengeToml(challengeDir: string, dest: string){
+    fs.copyFileSync(challengeDir+`/Move.toml`, dest+`/Move.toml`);
+}
+
 export function getChallengDir(type: ChallengeType, challengeName: string): string {
     return `./${type}s/${challengeName}`;
 }

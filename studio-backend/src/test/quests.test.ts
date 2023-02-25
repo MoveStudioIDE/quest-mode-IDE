@@ -1,4 +1,5 @@
-import { getChallengDir, getTemplates } from "../challenges"
+import * as fs from "fs";
+import { getChallengDir, getTemplates, transferChallengeToml } from "../challenges"
 import { assembleQuest, transferQuestTests } from "../quests";
 
 describe("Tests quest functions", () => {
@@ -10,13 +11,19 @@ describe("Tests quest functions", () => {
     // })
 
     it("Tests transfer tests", () => {
+        const code = fs.readFileSync("./quests/birthday_bot/templates/add_birthday_gift.move");
         const template = {
-            code: new Buffer("a;skjdf;aksjdf", "base64"),
+            code: code,
             name: "add_birthday_gift.move"
         }
 
+        const questName = "birthday_bot"
         const questDir = getChallengDir("quest", "birthday_bot");
-        transferQuestTests([template], questDir, "./temp-packages/thiswillberandom");
+        const destDir = "./temp-packages/thiswillberandom"
+
+        transferChallengeToml(questDir, destDir)
+        assembleQuest([template], questName, questDir, destDir)
+        transferQuestTests([template], questDir, destDir);
     })
 
 })
