@@ -57,20 +57,11 @@ function BuildCanvas(
     activeModules: string[],
     removeActiveModule: (module: string) => void,
     toast: JSX.Element | undefined,
-
     challengeType: CHALLENGE_TYPE | undefined,
-
-    // tutorialSteps:  any[],
-    // runTutorial: boolean,
-    // setRunTutorial: (runTutorial: boolean) => void,
-    // stepIndex: number,
-    // setStepIndex: (stepIndex: number) => void,
-    // tutorialCallback: (data: any) => void,
     setShowError: (showError: boolean) => void,
     setShowTestResults: (showTestResults: boolean) => void,
     setCode: (code: string, module: string) => void,
     changeModule: (module: string) => void,
-    deleteModule: (module: string) => void,
   }
 ) {
 

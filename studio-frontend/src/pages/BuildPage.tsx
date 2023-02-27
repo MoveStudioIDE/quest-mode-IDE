@@ -470,7 +470,6 @@ function BuildPage(props: {
     }
   }
 
-  // fix later
   useEffect(() => {
     if (!challenge || !currentModule) {
       console.log('f')
@@ -489,56 +488,21 @@ function BuildPage(props: {
   }, [currentModule])
 
 
-  const handleModuleDelete = (moduleName: string) => {
-
-    // Get confirmation from user
-    if (confirm(`Are you sure you want to delete ${moduleName}?`) == false) {
-      return;
-    }
-
-    const removeModuleFromIndexdb = async (moduleName: string) => {
-      if (challengeType === undefined) {
-        return
-      }
-      indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
-      await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
-      if (!challenge) {
-        return;
-      }
-      await indexedDb.deleteModule('projects', props.challenge, moduleName);
-    }
-    if (!challenge) {
-      return;
-    }
-    removeModuleFromIndexdb(moduleName).then(() => {
-      getProjectData(props.challenge);
-      removeActiveModuleHandler(moduleName);
-    });
-    // setCurrentModule(null);
-    // setCode('')
-    setShowError(false);
-    setCompileError('');
-    setCompiledModules([]);
-    setShowTestResults(false);
-    // Remove form active modules
-    // setActiveModules(activeModules.filter((m) => m !== moduleName));
-  }
-
   const incrementStep = () => {
     // get index of current template
     if (!challenge) {
       return;
     }
-    const index = (challenge as Puzzle).templates.findIndex((t) => t.name === currentModule);
+    const index = challenge.templates.findIndex((t) => t.name === currentModule);
     if (index === -1) {
       return;
     }
     // if index is last template, do nothing
-    if (index === (challenge as Puzzle).templates.length - 1) {
+    if (index === challenge.templates.length - 1) {
       return;
     }
     // set current template to next template
-    handleModuleChange((challenge as Puzzle).templates[index + 1].name);
+    handleModuleChange(challenge.templates[index + 1].name);
   }
 
   const decrementStep = () => {
@@ -547,7 +511,7 @@ function BuildPage(props: {
       return;
     }
 
-    const index = (challenge as Puzzle).templates.findIndex((t) => t.name === currentModule);
+    const index = challenge.templates.findIndex((t) => t.name === currentModule);
     if (index === -1) {
       return;
     }
@@ -558,7 +522,7 @@ function BuildPage(props: {
     }
 
     // set current template to previous template
-    handleModuleChange((challenge as Puzzle).templates[index - 1].name);
+    handleModuleChange(challenge.templates[index - 1].name);
   }
 
   const resetCache = async () => {
@@ -575,10 +539,16 @@ function BuildPage(props: {
       return
     }
 
-    indexedDb = new IndexedDb(`move-studio-ide-${CHALLENGE_TYPE[challengeType]}`);
+    indexedDb = new IndexedDb(`move-studio-ide-puzzle`);
     await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
 
-    await indexedDb.deleteObjectStore('projects');
+    await indexedDb.deleteObjectStore('challenges');
+
+    indexedDb = new IndexedDb(`move-studio-ide-quest`);
+    await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+
+    await indexedDb.deleteObjectStore('challenges');
+    
 
     localStorage.clear();
     window.location.reload();
@@ -614,6 +584,34 @@ function BuildPage(props: {
     }
   }
 
+  const resetProject = async () => {
+    if (!challenge) {
+      return;
+    }
+
+    if (challengeType === undefined) {
+      return
+    } else if (challengeType === CHALLENGE_TYPE.puzzle) {
+      // Delete project from indexedDb
+      indexedDb = new IndexedDb(`move-studio-ide-puzzle`);
+      await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+      await indexedDb.deleteValue('challenges', props.challenge);
+
+      // Reset cache for project
+      await resetCache();
+    } else if (challengeType === CHALLENGE_TYPE.quest) {
+      // TODO - reset quest's individual steps
+      // // Delete project from indexedDb
+      // indexedDb = new IndexedDb(`move-studio-ide-quest`);
+      // await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+      // await indexedDb.deleteValue('challenges', props.challenge);
+
+      // // Reset cache for project
+      // await resetCache();
+    }
+  }
+
+
   return (
     <div className="tutorial-header">
       <PageLayout
@@ -629,6 +627,8 @@ function BuildPage(props: {
             currentModule={currentModule}
             compileCode={compileCode} 
             testProject={testProject}
+
+            resetProject={resetProject}
             // compiledModules={compiledModules}
             // compileError={compileError}
             // activeModules={activeModules}
@@ -641,6 +641,7 @@ function BuildPage(props: {
             title={challengeConfig?.name || ''}
             objective={challengeConfig?.objective || ''}
             instructions={challengeConfig?.instructions || []}
+            objectives={(challengeConfig as QuestConfig | undefined)?.objectives || []}
             
             // tutorialSteps={steps}
             // tutorialCallback={tutorialCallback}
@@ -673,18 +674,9 @@ function BuildPage(props: {
             activeModules={activeModules}
             removeActiveModule={removeActiveModuleHandler}
             toast={toast}
-
             challengeType={challengeType}
-
-            // tutorialSteps={steps}
-            // tutorialCallback={tutorialCallback}
-            // runTutorial={runTutorial}
-            // setRunTutorial={setRunTutorial}
-            // stepIndex={stepIndex}
-            // setStepIndex={setStepIndex}
             code={code} setCode={handleNewCode} 
             changeModule={handleModuleChange}
-            deleteModule={handleModuleDelete}
           />
         }
       />
