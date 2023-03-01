@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Challenge, CHALLENGE_TYPE, Puzzle, PuzzleTemplates } from "../pages/BuildPage";
+import { Challenge, CHALLENGE_TYPE, Templates } from "../pages/BuildPage";
 
 function BuildInnerSidebar(
   props: {
@@ -16,27 +16,13 @@ function BuildInnerSidebar(
     objective: string,
     objectives: string[],
     instructions: string[] | string[][],
+    stepIndex: number,
   }
 ) {
 
   //---Helper---//
 
-  const [stepIndex, setStepIndex] = useState(0);
-
-  useEffect(() => {
-    if (props.currentProject == undefined) {
-      setStepIndex(0);
-      return;
-    } 
-    const index = props.currentProject.templates.findIndex((t) => t.name === props.currentModule)
-    if (index === -1) {
-      setStepIndex(0);
-    } else {
-      setStepIndex(index);
-    }
-  }, [props.currentModule])
-
-  const tableModules = (props.challengeType === CHALLENGE_TYPE.puzzle) ? (props.currentProject as Puzzle)?.templates.map((template: PuzzleTemplates) => {
+  const tableModules = (props.challengeType === CHALLENGE_TYPE.puzzle) ? props.currentProject?.templates.map((template: Templates) => {
     const templateName = template.name;
 
     return (
@@ -165,13 +151,13 @@ function BuildInnerSidebar(
                   {props.objective}
                 </code>
                 <hr className="opacity-50"/>
-                <h2 className='font-semibold'>Step #{stepIndex + 1}: </h2>
+                <h2 className='font-semibold'>Step #{props.stepIndex + 1}: </h2>
                 <code>
-                  {props.objectives[stepIndex]}
+                  {props.objectives[props.stepIndex]}
                 </code>
                 <h2 className='font-semibold'>Instructions:</h2>
                 <p>
-                  {(props.instructions as string [][])[stepIndex].map((instruction, index) => {
+                  {(props.instructions as string [][])[props.stepIndex].map((instruction, index) => {
                     return (
                       <div>
                         <p> {index + 1}. {instruction} </p>
@@ -224,7 +210,7 @@ function BuildInnerSidebar(
                 >
                   «
                 </button>
-                <button className="btn btn-outline no-animation btn-sm">step {stepIndex + 1}/{props.currentProject?.templates.length}</button>
+                <button className="btn btn-outline no-animation btn-sm">step {props.stepIndex + 1}/{props.currentProject?.templates.length}</button>
                 <button 
                   className="btn btn-outline btn-sm"
                   onClick={props.incrementStep}

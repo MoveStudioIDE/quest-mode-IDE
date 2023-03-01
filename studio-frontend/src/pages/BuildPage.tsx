@@ -34,17 +34,13 @@ type QuestConfig = {
 
 type ChallengeConfig = PuzzleConfig | QuestConfig;
 
-export type Challenge = Puzzle | Quest;
 
-export type Puzzle = {
-  templates: PuzzleTemplates[]
+export type Challenge = {
+  challenge: string, 
+  templates: Templates[]
 }
 
-export type Quest = {
-  templates: PuzzleTemplates[],
-}
-
-export type PuzzleTemplates = {
+export type Templates = {
   name: string,
   code: string,
 }
@@ -174,6 +170,8 @@ function BuildPage(props: {
 
   }, [challengeType]);
 
+  const [stepIndex, setStepIndex] = useState(0);
+
   const [code, setCode] = useState('');
 
   const [challenge, setChallenge] = useState<Challenge>();
@@ -186,6 +184,19 @@ function BuildPage(props: {
   const [showTestResults, setShowTestResults] = useState(false);
 
   const [activeModules, setActiveModules] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (challenge == undefined) {
+      setStepIndex(0);
+      return;
+    } 
+    const index = challenge.templates.findIndex((t) => t.name === currentModule)
+    if (index === -1) {
+      setStepIndex(0);
+    } else {
+      setStepIndex(index);
+    }
+  }, [currentModule])
   
 
   //---Helpers---//
@@ -221,7 +232,21 @@ function BuildPage(props: {
 
     console.log('compiling with backend: ', BACKEND_URL);
 
-    axios.post(`${BACKEND_URL}compile`, challenge).then((res) => {
+    let challengeToCompile: Challenge;
+    if (challengeType === CHALLENGE_TYPE.quest && challenge) {
+      challengeToCompile = {
+        challenge: challenge.challenge,
+        templates: challenge.templates.slice(0, stepIndex + 1),
+      };
+    } else if (challengeType === CHALLENGE_TYPE.puzzle && challenge) {
+      challengeToCompile = challenge ;
+    } else {
+      return
+    }
+
+    console.log("challengeToCompile", challengeToCompile)
+
+    axios.post(`${BACKEND_URL}compile`, challengeToCompile).then((res) => {
       const compileResults = res.data as {
         compiledModules: string[];
         errorCode: string;
@@ -246,7 +271,7 @@ function BuildPage(props: {
                   }
                   if (activeModules.length == 0) {
                     console.log('no active modules')
-                    addActiveModulesHandler((challenge as Puzzle).templates[0].name);
+                    addActiveModulesHandler(challenge.templates[0].name);
                   }
                   setShowError(true);
                 }}
@@ -305,7 +330,19 @@ function BuildPage(props: {
 
     console.log('testing with backend: ', BACKEND_URL);
 
-    axios.post(`${BACKEND_URL}test`, challenge).then((res) => {
+    let challengeToTest: Challenge;
+    if (challengeType === CHALLENGE_TYPE.quest && challenge) {
+      challengeToTest = {
+        challenge: challenge.challenge,
+        templates: challenge.templates.slice(0, stepIndex + 1),
+      };
+    } else if (challengeType === CHALLENGE_TYPE.puzzle && challenge) {
+      challengeToTest = challenge ;
+    } else {
+      return
+    }
+
+    axios.post(`${BACKEND_URL}test`, challengeToTest).then((res) => {
       const testResults = res.data as {
         result: string;
         errorCode: string;
@@ -333,7 +370,7 @@ function BuildPage(props: {
                 }
                 if (activeModules.length == 0) {
                   console.log('no active modules')
-                  addActiveModulesHandler((challenge as Puzzle).templates[0].name);
+                  addActiveModulesHandler(challenge.templates[0].name);
                 }
                 setShowTestResults(true);
               }}
@@ -471,9 +508,9 @@ function BuildPage(props: {
       return;
     }
 
-    for (let i = 0; i < (challenge as Puzzle).templates.length; i++) {
-      if ((challenge as Puzzle).templates[i].name === currentModule) {
-        setCode((challenge as Puzzle).templates[i].code);
+    for (let i = 0; i < challenge.templates.length; i++) {
+      if (challenge.templates[i].name === currentModule) {
+        setCode(challenge.templates[i].code);
         return;
       }
     }
@@ -622,6 +659,8 @@ function BuildPage(props: {
             currentModule={currentModule}
             compileCode={compileCode} 
             testProject={testProject}
+
+            stepIndex={stepIndex}
 
             resetProject={resetProject}
             // compiledModules={compiledModules}
