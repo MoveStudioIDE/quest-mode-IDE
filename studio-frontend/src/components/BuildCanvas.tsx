@@ -65,25 +65,6 @@ function BuildCanvas(
   }
 ) {
 
-  // useEffect(() => {
-  //   if (props.runTutorial && props.stepIndex === 9) {
-  //     props.setStepIndex(10)
-  //   }
-  // }, [props.compiledModules, props.compileError])
-
-  
-  // const [editorThemeTemp, setEditorTheme] = useState("vs-dark");
-
-  // useEffect(() => {
-  //   if (monaco === null) {
-  //     return;
-  //   }
-
-  //   console.log('theme', editorThemeTemp)
-
-  //   monaco.editor.setTheme(editorThemeTemp)
-  // }, [editorThemeTemp])
-
 
   const monaco = useMonaco();
 
@@ -192,9 +173,6 @@ function BuildCanvas(
       })
     }
 
-    // console.log('monaco', monaco.languages);
-    // console.log('monaco', monaco.languages.getLanguages());
-
   })
 
   useEffect(() => {
@@ -266,7 +244,7 @@ function BuildCanvas(
           }
           <Editor
             height="90vh"
-            width={`100%`}
+            width='100%'
             language="sui-move"
             value={props.code}
             onChange={handleEditorChange}

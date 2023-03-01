@@ -23,22 +23,17 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:80/';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import BuildPage from './pages/BuildPage';
 
-import Joyride from 'react-joyride';
 
 
 function App() {
 
   return (
     <div>
-      {/* <WalletProvider> */}
-        <BrowserRouter>
-          <Routes>
-            {/* <Route path="/" element={<LandingPage />} /> */}
-            <Route path="/build" element={<BuildPage challenge='quest%Birthday_bot' />} />
-            {/* <Route path="/deployment" element={<DeploymentPage />} /> */}
-          </Routes>
-        </BrowserRouter>
-      {/* </WalletProvider> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/build" element={<BuildPage challenge='quest%Birthday_bot' />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

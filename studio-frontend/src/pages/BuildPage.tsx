@@ -601,13 +601,13 @@ function BuildPage(props: {
       await resetCache();
     } else if (challengeType === CHALLENGE_TYPE.quest) {
       // TODO - reset quest's individual steps
-      // // Delete project from indexedDb
-      // indexedDb = new IndexedDb(`move-studio-ide-quest`);
-      // await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
-      // await indexedDb.deleteValue('challenges', props.challenge);
+      // Delete project from indexedDb
+      indexedDb = new IndexedDb(`move-studio-ide-quest`);
+      await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+      await indexedDb.deleteValue('challenges', props.challenge);
 
-      // // Reset cache for project
-      // await resetCache();
+      // Reset cache for project
+      await resetCache();
     }
   }
 

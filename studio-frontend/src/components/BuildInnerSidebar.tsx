@@ -81,6 +81,7 @@ function BuildInnerSidebar(
     <div className="w-full h-full">
       {
         props.challengeType === CHALLENGE_TYPE.puzzle &&
+        props.currentProject &&
         <div className="card w-full h-full card-compact">
           <div className="card w-full overflow-y-auto">
             <div className="card-body">
