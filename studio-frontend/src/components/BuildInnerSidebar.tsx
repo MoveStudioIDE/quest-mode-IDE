@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Challenge, CHALLENGE_TYPE, Puzzle, PuzzleTemplates } from "../pages/BuildPage";
-import { Dependency, Module, Project } from "../types/project-types";
 
 function BuildInnerSidebar(
   props: {
@@ -9,15 +8,10 @@ function BuildInnerSidebar(
     addActiveModules: (module: string) => void,
     currentProject: Challenge | undefined,
     currentModule: string | undefined,
-
     challengeType: CHALLENGE_TYPE | undefined,
     incrementStep: () => void,
     decrementStep: () => void,
-    // stepIndex: number,
-
     resetProject: () => void,
-
-
     title: string, 
     objective: string,
     objectives: string[],
@@ -65,8 +59,6 @@ function BuildInnerSidebar(
           <p 
             className="ml-1 font-mono text-xs w-52 whitespace-normal break-words"
           >
-            {/* TODO: Eventually get this to work with wrapping, not truncating */}
-            {/* {shortenWord(module.name, 17)}{module.name.length < 18 ? ".move" : ""} */}
             {templateName}
           </p>
         </td>
@@ -79,6 +71,7 @@ function BuildInnerSidebar(
 
   return (
     <div className="w-full h-full">
+      
       {
         props.challengeType === CHALLENGE_TYPE.puzzle &&
         props.currentProject &&
@@ -105,62 +98,56 @@ function BuildInnerSidebar(
               </p>
             </div>
           </div>
-        <div className="card w-full overflow-y-auto">
-          <div className="card-body">
-            <div className="flex flex-col justify-center max-h-full">
-                <table  className="table table-compact table-zebra w-full max-w-full [&_tr.hover:hover_*]:!bg-neutral p-8">
-                  <thead>
-                    <tr>
-                      <th colSpan={3} style={{position: "relative"}} className="text-center">Modules</th>
-                    </tr>
-                  </thead>
-                  <tbody className="">
-                    {tableModules}
-                  </tbody>
-                </table>
+          <div className="card w-full overflow-y-auto">
+            <div className="card-body">
+              <div className="flex flex-col justify-center max-h-full">
+                  <table  className="table table-compact table-zebra w-full max-w-full [&_tr.hover:hover_*]:!bg-neutral p-8">
+                    <thead>
+                      <tr>
+                        <th colSpan={3} style={{position: "relative"}} className="text-center">Modules</th>
+                      </tr>
+                    </thead>
+                    <tbody className="">
+                      {tableModules}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute inset-x-0 bottom-0">
+            <hr className="p-1 "/>
+            <div className="" style={{display: "flex", justifyContent: "center"}}>
+              <button 
+                onClick={props.compileCode} 
+                className={`btn btn-xs btn-warning btn-outline w-min h-min m-1 mb-3`}
+              >
+                Compile
+              </button>
+              
+              <button 
+                onClick={props.testProject} 
+                className={`btn btn-xs btn-warning btn-outline w-min h-min m-1 mb-3`}
+              >
+                Test
+              </button>
+              <button 
+                onClick={props.resetProject} 
+                className={`btn btn-xs btn-error btn-outline w-min h-min m-1 mb-3`}
+              >
+                Reset
+              </button>
+              <button 
+                onClick={props.testProject} 
+                className={`btn btn-xs btn-success btn-outline w-min h-min m-1 mb-3`}
+              >
+                Submit
+              </button>
             </div>
           </div>
         </div>
-
-
-          
-
-        <div className="absolute inset-x-0 bottom-0">
-          <hr className="p-1 "/>
-          <div className="" style={{display: "flex", justifyContent: "center"}}>
-            <button 
-              onClick={props.compileCode} 
-              className={`btn btn-xs btn-warning btn-outline w-min h-min m-1 mb-3`}
-              // style={{margin:"2px 2px"}}
-            >
-              Compile
-            </button>
-            
-            <button 
-              onClick={props.testProject} 
-              className={`btn btn-xs btn-warning btn-outline w-min h-min m-1 mb-3`}
-              // style={{margin:"2px 2px"}}
-            >
-              Test
-            </button>
-            <button 
-              onClick={props.resetProject} 
-              className={`btn btn-xs btn-error btn-outline w-min h-min m-1 mb-3`}
-              // style={{margin:"2px 2px"}}
-            >
-              Reset
-            </button>
-            <button 
-              onClick={props.testProject} 
-              className={`btn btn-xs btn-success btn-outline w-min h-min m-1 mb-3`}
-              // style={{margin:"2px 2px"}}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      </div>
       }
+      
       {
         props.challengeType === CHALLENGE_TYPE.quest &&
         props.currentProject &&
@@ -194,8 +181,6 @@ function BuildInnerSidebar(
                 </p>
               </div>
             </div>
-
-
           </div>
 
           <hr className="p-1 "/>
@@ -205,7 +190,6 @@ function BuildInnerSidebar(
               <button 
                 onClick={props.compileCode} 
                 className={`btn btn-xs btn-warning btn-outline w-min h-min m-1 mb-3`}
-                // style={{margin:"2px 2px"}}
               >
                 Compile
               </button>
@@ -213,48 +197,43 @@ function BuildInnerSidebar(
               <button 
                 onClick={props.testProject} 
                 className={`btn btn-xs btn-warning btn-outline w-min h-min m-1 mb-3`}
-                // style={{margin:"2px 2px"}}
               >
                 Test
               </button>
               <button 
                 onClick={props.resetProject} 
                 className={`btn btn-xs btn-error btn-outline w-min h-min m-1 mb-3`}
-                // style={{margin:"2px 2px"}}
               >
                 Reset
               </button>
               <button 
                 onClick={props.testProject} 
                 className={`btn btn-xs btn-success btn-outline w-min h-min m-1 mb-3`}
-                // style={{margin:"2px 2px"}}
               >
                 Submit
               </button>
             </div>
           </div>
 
-            {/* <hr className="p-1 row-auto"/> */}
           <div className="inset-x-0 bottom-0 mb-3">
-              <div className="flex justify-center">
-                <div className="btn-group">
-                  <button 
-                    className="btn btn-outline btn-sm"
-                    onClick={props.decrementStep}
-                  >
-                    «
-                  </button>
-                  <button className="btn btn-outline no-animation btn-sm">step {stepIndex + 1}/{props.currentProject?.templates.length}</button>
-                  <button 
-                    className="btn btn-outline btn-sm"
-                    onClick={props.incrementStep}
-                  >
-                    »
-                  </button>
-                </div>
+            <div className="flex justify-center">
+              <div className="btn-group">
+                <button 
+                  className="btn btn-outline btn-sm"
+                  onClick={props.decrementStep}
+                >
+                  «
+                </button>
+                <button className="btn btn-outline no-animation btn-sm">step {stepIndex + 1}/{props.currentProject?.templates.length}</button>
+                <button 
+                  className="btn btn-outline btn-sm"
+                  onClick={props.incrementStep}
+                >
+                  »
+                </button>
               </div>
-              
             </div>
+          </div>
         </div>
       }
     </div>

@@ -2,13 +2,10 @@ import { useEffect, useState } from "react";
 import "./BuildCanvas.css";
 import Editor, {useMonaco} from "@monaco-editor/react";
 import * as monaco from 'monaco-editor';
-import { Module, Project } from "../types/project-types";
-import fs from 'fs';
 import Ansi from "ansi-to-react";
 import stripAnsi from 'strip-ansi';
 import { shortenWord } from "../utils/address-shortener";
-import { Challenge, CHALLENGE_TYPE } from "../pages/BuildPage";
-// import * as editorThemeJsons from "../utils/themes.json"
+import { Challenge, CHALLENGE_TYPE } from "../pages/BuildPage"; 
 const editorThemeJsons = require('../utils/themes.json')
 
 function BuildCanvas(
@@ -145,20 +142,14 @@ function BuildCanvas(
   useEffect(() => {
 
     if (monaco == null) {
-      // console.log('monaco is null')
       return;
     }
 
     Object.entries(editorThemeJsons).forEach(([key, value]) => {
-      // console.log('key', key)
-      // console.log('value', value)
       monaco.editor.defineTheme(key, value as monaco.editor.IStandaloneThemeData);
     })
 
-    // monaco.editor.defineTheme('Dracula', editorThemeJsons['Dracula'] as monaco.editor.IStandaloneThemeData);
     monaco.editor.setTheme("GitHubDark");
-    // console.log('theme', props.theme)
-    // console.log('editorTheme', editorTheme[props.theme])
   }, [monaco]);
 
 

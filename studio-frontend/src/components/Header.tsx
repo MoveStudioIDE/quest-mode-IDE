@@ -1,54 +1,11 @@
-import React from "react";
-import {ConnectButton} from '@suiet/wallet-kit';
 import { Link } from "react-router-dom";
-import studioIcon from "../icons/studio-62.png"
-import studioIcon2Transparent from "../icons/moveIconTransparent1.png"
-import studioIcon3Transparent from "../icons/studio10Transparent.png"
 import studioIconGifTransparent from "../icons/studioTransparent.gif"
-import daniel from "../icons/dan.jpeg"
-
-import bugIcon from "../icons/insect-30.png"
-
-
-// const daisyThemes = [
-//   // 'light',
-//   'dark',
-//   // 'cupcake',
-//   // 'bumblebee',
-//   // 'emerald',
-//   // 'corporate',
-//   // 'synthwave',
-//   // 'retro',
-//   // 'cyberpunk',
-//   // 'valentine',
-//   // 'halloween',
-//   // 'garden',
-//   // 'forest',
-//   // 'aqua',
-//   // 'lofi',
-//   // 'pastel',
-//   // 'fantasy',
-//   // 'wireframe',
-//   // 'black',
-//   // 'luxury',
-//   'dracula',
-//   // 'cmyk',
-//   // 'autumn',
-//   'business',
-//   // 'acid',
-//   // 'lemonade',
-//   'night',
-//   'coffee',
-//   // 'winter'
-// ];
 
 function Header(
   props: {
     resetCache: () => void;
   }
 ) {
-
-  
 
   return (
     <div className="navbar bg-base-300 step9">
@@ -72,7 +29,6 @@ function Header(
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="arcs"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
               Report a bug
             </a></li>
-
           </ul>
         </div>
       </div>
