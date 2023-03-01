@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Challenge, ChallengeType, Template} from './types';
+import { Challenge, ChallengeType, Project, Template} from './types';
 
 export function getChallenge(type: ChallengeType, challengeName: string): Challenge{
     const challengeDir = getChallengDir(type, challengeName)

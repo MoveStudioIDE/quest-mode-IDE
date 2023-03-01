@@ -1,9 +1,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { CompileReturn, Project, SubmitReturn, TestReturn } from './types';
-import dotenv from 'dotenv';
 import axios from 'axios';
-import { setupPackage } from './helpers';
 // import stripAnsi from 'strip-ansi';
 
 const MOCK_TEST_MODULE = `module overmind::birthday_bot_test {
@@ -14,23 +12,16 @@ const MOCK_TEST_MODULE = `module overmind::birthday_bot_test {
   }
 }`
 
-const TEMP_DIR = `${__dirname}/../temp-packages`;
-
-export async function compile(project: Project): Promise<CompileReturn> {
-
-  const challengeType = project.challenge.split('%')[0].toLowerCase();
-  const challengeName = project.challenge.split('%')[1].toLowerCase();
-
-  const tempProjectPath = await setupPackage(project, challengeType);
+export async function compile(projectName: string, projectPath: string): Promise<CompileReturn> {
 
   // Compile the project
   try {
     execSync(
-      `aptos move compile --package-dir ${tempProjectPath}`,
+      `aptos move compile --package-dir ${projectPath}`,
       { encoding: 'utf-8'}
     );
 
-    const buildDirfiles = fs.readdirSync(`${tempProjectPath}/build/${challengeName}/bytecode_modules/`);
+    const buildDirfiles = fs.readdirSync(`${projectPath}/build/${projectName}/bytecode_modules/`);
     let bytecodeFile;
     for(const file of buildDirfiles){
       if(file.endsWith(".mv")){
@@ -38,10 +29,10 @@ export async function compile(project: Project): Promise<CompileReturn> {
       }
     }
 
-    const compiledModules = fs.readFileSync(`${tempProjectPath}/build/${challengeName}/bytecode_modules/${bytecodeFile}`, "base64");
+    const compiledModules = fs.readFileSync(`${projectPath}/build/${projectName}/bytecode_modules/${bytecodeFile}`, "base64");
 
     // Remove the temporary project directory
-    fs.rmdirSync(tempProjectPath, { recursive: true });
+    fs.rmdirSync(projectPath, { recursive: true });
 
     return {
       compiledModules: compiledModules as unknown as string[],
@@ -50,13 +41,13 @@ export async function compile(project: Project): Promise<CompileReturn> {
     }
 
   } catch (error: any) {
-    console.log('error', error)
+    // console.log('error', error)
     const errorMessage = error.stdout;
 
     // Check error message for update needed message - TODO
 
     // Remove the temporary project directory
-    fs.rmdirSync(tempProjectPath, { recursive: true });
+    fs.rmdirSync(projectPath, { recursive: true });
     
     return {
       compiledModules: [],
@@ -66,17 +57,12 @@ export async function compile(project: Project): Promise<CompileReturn> {
   }
 }
 
-export async function testPackage(project: Project): Promise<TestReturn> {
+export async function testPackage(projectPath: string): Promise<TestReturn> {
 
-  const challengeType = project.challenge.split('%')[0].toLowerCase();
-  // const challengeName = project.challenge.split('%')[1].toLowerCase();
-
-  const tempProjectPath = await setupPackage(project, challengeType);
-
-  // Compile the project
+  // Test the project
   try {
     const test = execSync(
-      `aptos move test --package-dir ${tempProjectPath}`,
+      `aptos move test --package-dir ${projectPath}`,
       { encoding: 'utf-8'}
     );
 
@@ -87,7 +73,7 @@ export async function testPackage(project: Project): Promise<TestReturn> {
     const testResults = test.slice(testResultsIndex);
 
     // Remove the temporary project directory
-    fs.rmdirSync(tempProjectPath, { recursive: true });
+    fs.rmdirSync(projectPath, { recursive: true });
 
     return {
       result: testResults,
@@ -101,7 +87,7 @@ export async function testPackage(project: Project): Promise<TestReturn> {
     const errorMessage = error.stderr.replace(errorMessageToIgnore, '');
 
     // Remove the temporary project directory
-    fs.rmdirSync(tempProjectPath, { recursive: true });
+    fs.rmdirSync(projectPath, { recursive: true });
     
 
     return {
@@ -113,8 +99,8 @@ export async function testPackage(project: Project): Promise<TestReturn> {
   }
 }
 
-export async function submit(project: Project, user: string, callback: string): Promise<SubmitReturn>{
-  const result = await testPackage(project);
+export async function submit(projectDir: string, user: string, callback: string): Promise<SubmitReturn>{
+  const result = await testPackage(projectDir);
   if(result.error){
     console.log("Error")
     return{

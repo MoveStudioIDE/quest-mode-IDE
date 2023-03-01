@@ -2,7 +2,9 @@ import cors from 'cors';
 import express from 'express';
 import { getChallengDir, getChallenge, getConfig, getTemplates } from './challenges';
 import { compile, testPackage } from './compile';
-import { ChallengeType } from './types';
+import { compilePuzzle, testPuzzle } from './puzzles';
+import { compileQuest, testQuest } from './quests';
+import { ChallengeType, CompileReturn, TestReturn } from './types';
 
 const app = express();
 const portHttp = 80;
@@ -78,13 +80,21 @@ app.get('/templates', async (req, res) => {
 app.post('/compile', async (req, res) => {
   const project = req.body;
 
-  // console.log(project);
+  const challengeType = project.challenge.split('%')[0].toLowerCase();
+
   console.log('compiling project...')
 
-  // Call compile function
-  const compileResult = await compile(project);
-
-  // console.log(compileResult)
+  let compileResult: CompileReturn;
+  if(challengeType == "puzzle"){
+    compileResult = await compilePuzzle(project)
+  }
+  else if(challengeType == "quest"){
+    compileResult  = await compileQuest(project)
+  }
+  else{
+    res.sendStatus(400).send("Invalid challenge type")
+    return;
+  }
 
   res.send(compileResult);
 
@@ -93,15 +103,23 @@ app.post('/compile', async (req, res) => {
 app.post('/test', async (req, res) => {
   const project = req.body;
 
-  // console.log(project);
+  const challengeType = project.challenge.split('%')[0].toLowerCase();
+
   console.log('testing project...')
 
-  // Call compile function
-  const testResults = await testPackage(project);
+  let testResult: TestReturn;
+  if(challengeType == "puzzle"){
+    testResult = await testPuzzle(project)
+  }
+  else if(challengeType == "quest"){
+    testResult  = await testQuest(project)
+  }
+  else{
+    res.sendStatus(400).send("Invalid challenge type")
+    return;
+  }
 
-  // console.log(compileResult)
-
-  res.send(testResults);
+  res.send(testResult);
 
 });
 

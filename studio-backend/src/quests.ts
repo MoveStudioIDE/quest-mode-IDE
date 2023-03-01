@@ -1,6 +1,11 @@
 import * as fs from "fs";
-import { getTemplates } from "./challenges";
-import { Template } from "./types";
+import { getTemplates, transferChallengeToml } from "./challenges";
+import { compile, testPackage } from "./compile";
+import { makeRandString } from "./helpers";
+import { Project, Template } from "./types";
+
+const TEMP_DIR = `${__dirname}/../temp-packages`;
+const QUEST_DIR = `${__dirname}/../quests`;
 
 export function getPlaceholder(questDir: string): Buffer{
     return fs.readFileSync(questDir+`/placeholder.move`)
@@ -38,4 +43,26 @@ export function transferQuestTests(templates: Template[], questDir: string, temp
             fs.copyFileSync(questDir+`/tests/${testName}`, tempDir+`/sources/${testName}`);
         }
     }
+}
+
+export async function compileQuest(project: Project){
+    const questName = project.challenge.split('%')[1].toLowerCase();
+    const questDir = QUEST_DIR+`/${questName}`;
+    const projectDir = TEMP_DIR+`/${questName + makeRandString(20)}`;
+    assembleQuest(project.templates, questName, questDir, projectDir); 
+    transferQuestTests(project.templates, questDir, projectDir);
+    transferChallengeToml(questDir, projectDir);
+    const compileResult = await compile(questName, projectDir);
+    return compileResult;
+}
+
+export async function testQuest(project: Project){
+    const questName = project.challenge.split('%')[1].toLowerCase();
+    const questDir = QUEST_DIR+`/${questName}`;
+    const projectDir = TEMP_DIR+`/${questName + makeRandString(20)}`;
+    assembleQuest(project.templates, questName, questDir, projectDir); 
+    transferQuestTests(project.templates, questDir, projectDir);
+    transferChallengeToml(questDir, projectDir);
+    const testResult = await testPackage(projectDir);
+    return testResult;
 }
