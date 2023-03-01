@@ -11,39 +11,6 @@ import { Challenge, CHALLENGE_TYPE } from "../pages/BuildPage";
 // import * as editorThemeJsons from "../utils/themes.json"
 const editorThemeJsons = require('../utils/themes.json')
 
-const editorTheme = {
-  dark: 'GitHubDark',
-  light: 'ChomeDevTools',
-  dracula: 'Dracula',
-  synthwave: 'NightOwl', 
-  cupcake: 'Tomorrow',
-  bumblebee: 'Clouds', 
-  emerald: 'Dreamweaver',
-  corporate: 'SlushandPoppies',
-  retro: 'DominionDay',
-  cyberpunk: 'Solarizeddark', 
-  valentine: 'Tomorrow', 
-  halloween: 'PastelsonDark',
-  garden: 'SlushandPoppies',
-  forest: 'Sunburst',
-  aqua: 'Cobalt2',
-  lofi: 'Dawn', 
-  pastel: 'Tomorrow', 
-  fantasy: 'SlushandPoppies',
-  wireframe: 'Katzenmilch',
-  black: 'krTheme',
-  luxury: 'idleFingers',
-  cmyk: 'ChromeDevTools',
-  autumn: 'GitHubLight', 
-  business: 'Twilight', 
-  acid: 'GitHubLight', 
-  lemonade: 'Clouds', 
-  night: 'NightOwl',
-  coffee: 'Twilight', 
-  winter: 'Tomorrow'
-
-} as {[key: string]: string}
-
 function BuildCanvas(
   props: {
     code: string,
@@ -236,9 +203,6 @@ function BuildCanvas(
           {
             props.challengeType === CHALLENGE_TYPE.puzzle &&
             <div className="tabs step4" style={{overflow: "auto", display: "flex", flexWrap: "inherit"}}>
-              {/* <a className="tab tab-bordered">Tab 1</a> 
-              <a className="tab tab-bordered tab-active">Tab 2</a> 
-              <a className="tab tab-bordered">Tab 3</a> */}
               {modules}
             </div>
           }

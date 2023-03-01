@@ -235,7 +235,7 @@ function BuildInnerSidebar(
           </div>
 
             {/* <hr className="p-1 row-auto"/> */}
-          <div className="inset-x-0 bottom-0 mb-5">
+          <div className="inset-x-0 bottom-0 mb-3">
               <div className="flex justify-center">
                 <div className="btn-group">
                   <button 
