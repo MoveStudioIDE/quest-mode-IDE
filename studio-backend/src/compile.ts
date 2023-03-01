@@ -17,22 +17,25 @@ export async function compile(projectName: string, projectPath: string): Promise
   // Compile the project
   try {
     execSync(
-      `aptos move compile --package-dir ${projectPath}`,
+      `aptos move compile --package-dir ${projectPath} --bytecode-version 6`,
       { encoding: 'utf-8'}
     );
 
-    const buildDirfiles = fs.readdirSync(`${projectPath}/build/${projectName}/bytecode_modules/`);
+    const buildPath = `${projectPath}/build/`;
+    const [moduleDir] = fs.readdirSync(buildPath)
+
+    const buildDirfiles = fs.readdirSync(buildPath+`/${moduleDir}/bytecode_modules/`);
     let bytecodeFile;
     for(const file of buildDirfiles){
       if(file.endsWith(".mv")){
         bytecodeFile = file
       }
     }
-
-    const compiledModules = fs.readFileSync(`${projectPath}/build/${projectName}/bytecode_modules/${bytecodeFile}`, "base64");
+    
+    const compiledModules = fs.readFileSync(`${projectPath}/build/${moduleDir}/bytecode_modules/${bytecodeFile}`, "base64");
 
     // Remove the temporary project directory
-    fs.rmdirSync(projectPath, { recursive: true });
+    fs.rmSync(projectPath, { recursive: true });
 
     return {
       compiledModules: compiledModules as unknown as string[],
@@ -47,7 +50,7 @@ export async function compile(projectName: string, projectPath: string): Promise
     // Check error message for update needed message - TODO
 
     // Remove the temporary project directory
-    fs.rmdirSync(projectPath, { recursive: true });
+    fs.rmSync(projectPath, { recursive: true });
     
     return {
       compiledModules: [],
@@ -62,7 +65,7 @@ export async function testPackage(projectPath: string): Promise<TestReturn> {
   // Test the project
   try {
     const test = execSync(
-      `aptos move test --package-dir ${projectPath}`,
+      `aptos move test --package-dir ${projectPath} --bytecode-version 6`,
       { encoding: 'utf-8'}
     );
 
