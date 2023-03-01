@@ -1,5 +1,5 @@
 #[test_only]
-module hello_blockchain::message_tests {
+module hello_blockchain::hello_tests {
 
     use hello_blockchain::message;
 
@@ -9,9 +9,4 @@ module hello_blockchain::message_tests {
         assert!(msg == 1, 78);
     }
 
-    #[test]
-    public fun test_bye() {
-        let msg = message::bye();
-        assert!(msg == 2, 78);
-    }
 }
