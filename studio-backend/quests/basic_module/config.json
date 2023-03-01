@@ -1,15 +1,68 @@
 {
-    "name": "Basic module",
-    "objective": "This module is used for testing purposes",
+    "name": "Birthday Bot",
+    "objective": "Create a Move program that will wish a happy birthday to a friend.",
+    "objectives" : [
+        "objective1",
+        "objective2",
+        "objective3",
+        "objective4",
+        "objective5",
+        "objective6",
+        "objective7",
+        "objective8",
+        "objective9",
+        "objective10"
+    ],
     "instructions": [
-        "Create a new Move program called birthday.move",
-        "Create a new resource called BirthdayBot",
-        "Create a new function called wish_birthday",
-        "Create a new function called main",
-        "Create a new resource called BirthdayBot",
-        "Create a new function called wish_birthday",
-        "Create a new function called main",
-        "Create a new resource called BirthdayBot"
+        [
+            "Create a new Move program called birthday.move1",
+            "Create a new resource called BirthdayBot",
+            "Create a new function called wish_birthday"
+        ],
+        [
+            "Create a new Move program called birthday.move2",
+            "Create a new function called wish_birthday"
+        ],
+        [
+            "Create a new Move program called birthday.move3",
+            "Create a new resource called BirthdayBot"
+        ],
+        [
+            "Create a new Move program called birthday.move4",
+            "Create a new resource called BirthdayBot",
+            "Create a new function called wish_birthday",
+            "Create a new resource called BirthdayBot"
+        ],
+        [
+            "Create a new Move program called birthday.move5",
+            "Create a new resource called BirthdayBot",
+            "Create a new resource called BirthdayBot",
+            "Create a new function called wish_birthday"
+        ],
+        [
+            "Create a new Move program called birthday.move6",
+            "Create a new resource called BirthdayBot",
+            "Create a new function called wish_birthday"
+        ],
+        [
+            "Create a new Move program called birthday.move7",
+            "Create a new resource called BirthdayBot",
+            "Create a new function called wish_birthday",
+            "Create a new function called wish_birthday"
+        ],
+        [
+            "Create a new Move program called birthday.move8",
+            "Create a new resource called BirthdayBot",
+            "Create a new function called wish_birthday"
+        ],
+        [
+            "Create a new Move program called birthday.move9",
+            "Create a new resource called BirthdayBot"
+        ],
+        [
+            "Create a new Move program called birthday.move10",
+            "Create a new function called wish_birthday"
+        ]
     ],
     "description": "Wish a friend a happy birthday!"
 }

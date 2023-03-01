@@ -31,7 +31,7 @@ function App() {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/build" element={<BuildPage challenge='puzzle%basic_module' />} />
+          <Route path="/build" element={<BuildPage challenge='quest%basic_module' />} />
         </Routes>
       </BrowserRouter>
     </div>
