@@ -89,14 +89,37 @@ export async function testPackage(projectPath: string): Promise<TestReturn> {
     const errorMessageToIgnore = error.stdout;
     const errorMessage = error.stderr.replace(errorMessageToIgnore, '');
 
+    // find index of substring
+    const index = errorMessageToIgnore.search("Running Move unit tests");
+
+    // split string starting at substring
+    const errorMessageToIgnoreSplit = errorMessageToIgnore.slice(index);
+
+    console.log('error', error)
+
+    console.log('errorMessageToIgnoreSplit', errorMessageToIgnoreSplit, "'")
+
+    // determine if there is any letters in a string
+    const regex = /[a-zA-Z]/g;
+    const hasLetters = regex.test(errorMessageToIgnoreSplit);
+
+    console.log('errorMessage', errorMessage)
+
     // Remove the temporary project directory
     fs.rmdirSync(projectPath, { recursive: true });
-    
+
+    if (!hasLetters) {
+      return {
+        result: errorMessageToIgnoreSplit,
+        errorCode: errorMessage,
+        error: true
+      };
+    }
 
     return {
-      result: "",
+      result: errorMessageToIgnoreSplit,
       errorCode: errorMessage,
-      error: true
+      error: false
     };
 
   }
