@@ -3,15 +3,10 @@ import BuildInnerSidebar from "../components/BuildInnerSidebar";
 import BuildCanvas from "../components/BuildCanvas";
 import { useEffect, useState } from "react";
 import { IndexedDb } from "../db/ProjectsDB";
-import { getProjectData } from "../db/ProjectDB";
-// import { Project } from "../types/project-types";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import Header from "../components/Header";
-import Joyride from 'react-joyride';
 import {SPINNER_COLORS} from "../utils/theme";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import Module from "module";
 import {Buffer} from 'buffer';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:80/';
@@ -358,9 +353,9 @@ function BuildPage(props: {
   }
 
   useEffect(() => {
-    if (challenge && challenge.templates.length > 0 && currentModule == null && activeModules.length == 0) {
-      setActiveModules([(challenge as Puzzle).templates[0].name])
-      setCurrentModule((challenge as Puzzle).templates[0].name);
+    if (challenge && challenge.templates.length > 0 && currentModule == null && activeModules.length == 0 ) {
+      setActiveModules([challenge.templates[0].name])
+      setCurrentModule(challenge.templates[0].name);
     }
   }, [challenge]);
   
@@ -601,13 +596,13 @@ function BuildPage(props: {
       await resetCache();
     } else if (challengeType === CHALLENGE_TYPE.quest) {
       // TODO - reset quest's individual steps
-      // // Delete project from indexedDb
-      // indexedDb = new IndexedDb(`move-studio-ide-quest`);
-      // await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
-      // await indexedDb.deleteValue('challenges', props.challenge);
+      // Delete project from indexedDb
+      indexedDb = new IndexedDb(`move-studio-ide-quest`);
+      await indexedDb.createObjectStore(['challenges'], {keyPath: 'challenge'});
+      await indexedDb.deleteValue('challenges', props.challenge);
 
-      // // Reset cache for project
-      // await resetCache();
+      // Reset cache for project
+      await resetCache();
     }
   }
 

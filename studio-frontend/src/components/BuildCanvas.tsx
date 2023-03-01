@@ -2,47 +2,11 @@ import { useEffect, useState } from "react";
 import "./BuildCanvas.css";
 import Editor, {useMonaco} from "@monaco-editor/react";
 import * as monaco from 'monaco-editor';
-import { Module, Project } from "../types/project-types";
-import fs from 'fs';
 import Ansi from "ansi-to-react";
 import stripAnsi from 'strip-ansi';
 import { shortenWord } from "../utils/address-shortener";
-import { Challenge, CHALLENGE_TYPE } from "../pages/BuildPage";
-// import * as editorThemeJsons from "../utils/themes.json"
+import { Challenge, CHALLENGE_TYPE } from "../pages/BuildPage"; 
 const editorThemeJsons = require('../utils/themes.json')
-
-const editorTheme = {
-  dark: 'GitHubDark',
-  light: 'ChomeDevTools',
-  dracula: 'Dracula',
-  synthwave: 'NightOwl', 
-  cupcake: 'Tomorrow',
-  bumblebee: 'Clouds', 
-  emerald: 'Dreamweaver',
-  corporate: 'SlushandPoppies',
-  retro: 'DominionDay',
-  cyberpunk: 'Solarizeddark', 
-  valentine: 'Tomorrow', 
-  halloween: 'PastelsonDark',
-  garden: 'SlushandPoppies',
-  forest: 'Sunburst',
-  aqua: 'Cobalt2',
-  lofi: 'Dawn', 
-  pastel: 'Tomorrow', 
-  fantasy: 'SlushandPoppies',
-  wireframe: 'Katzenmilch',
-  black: 'krTheme',
-  luxury: 'idleFingers',
-  cmyk: 'ChromeDevTools',
-  autumn: 'GitHubLight', 
-  business: 'Twilight', 
-  acid: 'GitHubLight', 
-  lemonade: 'Clouds', 
-  night: 'NightOwl',
-  coffee: 'Twilight', 
-  winter: 'Tomorrow'
-
-} as {[key: string]: string}
 
 function BuildCanvas(
   props: {
@@ -64,25 +28,6 @@ function BuildCanvas(
     changeModule: (module: string) => void,
   }
 ) {
-
-  // useEffect(() => {
-  //   if (props.runTutorial && props.stepIndex === 9) {
-  //     props.setStepIndex(10)
-  //   }
-  // }, [props.compiledModules, props.compileError])
-
-  
-  // const [editorThemeTemp, setEditorTheme] = useState("vs-dark");
-
-  // useEffect(() => {
-  //   if (monaco === null) {
-  //     return;
-  //   }
-
-  //   console.log('theme', editorThemeTemp)
-
-  //   monaco.editor.setTheme(editorThemeTemp)
-  // }, [editorThemeTemp])
 
 
   const monaco = useMonaco();
@@ -192,28 +137,19 @@ function BuildCanvas(
       })
     }
 
-    // console.log('monaco', monaco.languages);
-    // console.log('monaco', monaco.languages.getLanguages());
-
   })
 
   useEffect(() => {
 
     if (monaco == null) {
-      // console.log('monaco is null')
       return;
     }
 
     Object.entries(editorThemeJsons).forEach(([key, value]) => {
-      // console.log('key', key)
-      // console.log('value', value)
       monaco.editor.defineTheme(key, value as monaco.editor.IStandaloneThemeData);
     })
 
-    // monaco.editor.defineTheme('Dracula', editorThemeJsons['Dracula'] as monaco.editor.IStandaloneThemeData);
     monaco.editor.setTheme("GitHubDark");
-    // console.log('theme', props.theme)
-    // console.log('editorTheme', editorTheme[props.theme])
   }, [monaco]);
 
 
@@ -258,15 +194,12 @@ function BuildCanvas(
           {
             props.challengeType === CHALLENGE_TYPE.puzzle &&
             <div className="tabs step4" style={{overflow: "auto", display: "flex", flexWrap: "inherit"}}>
-              {/* <a className="tab tab-bordered">Tab 1</a> 
-              <a className="tab tab-bordered tab-active">Tab 2</a> 
-              <a className="tab tab-bordered">Tab 3</a> */}
               {modules}
             </div>
           }
           <Editor
             height="90vh"
-            width={`100%`}
+            width='100%'
             language="sui-move"
             value={props.code}
             onChange={handleEditorChange}
