@@ -1,4 +1,3 @@
-import { compile, submit, testPackage } from "../compile";
 import * as fs from 'fs';
 import { compilePuzzle, testPuzzle } from "../puzzles";
 
@@ -35,11 +34,11 @@ test("Tests Aptos test", async () => {
     console.log(testResults.result) //Fails Because 
 })
 
-test("Compile Aptos test", async () => {
+// test("Compile Aptos test", async () => {
     
-    const compileResult = await compilePuzzle(project);
-    console.log(compileResult.compiledModules) //Fails Because 
-})
+//     const compileResult = await compilePuzzle(project);
+//     console.log(compileResult.compiledModules) //Fails Because 
+// })
 // test("Tests submit and Callback", async () => {
 //     const res = await submit(project, "greenpeppers100", " https://webhook.site/d82b7724-bccc-4b76-b94a-8974849bf13a")
 

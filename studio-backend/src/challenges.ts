@@ -40,3 +40,19 @@ export function getTemplates(challengeDir: string): Template[] {
     }
     return templates
 }
+
+export function transferChallengeTests(templates: Template[], challengeDir: string, tempDir: string){
+    const questTests = fs.readdirSync(challengeDir+"/tests");
+    const tempNames = templates.map((t) => t.name.slice(0, t.name.length-5));
+
+    if(!fs.existsSync(tempDir+"/sources")){
+        fs.mkdirSync(tempDir+"/sources/", {recursive: true})
+    }
+
+    for(const name of tempNames){
+        const testName = `${name}_test.move`
+        if(questTests.includes(testName)){
+            fs.copyFileSync(challengeDir+`/tests/${testName}`, tempDir+`/sources/${testName}`);
+        }
+    }
+}

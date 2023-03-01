@@ -1,8 +1,8 @@
 import * as fs from 'fs';
-import { transferChallengeToml } from './challenges';
+import { transferChallengeTests, transferChallengeToml } from './challenges';
 import { compile, testPackage } from './compile';
 import { makeRandString } from './helpers';
-import { Project } from './types';
+import { Project, Template } from './types';
 
 const TEMP_DIR = `${__dirname}/../temp-packages`;
 const PUZZLES_DIR = `${__dirname}/../puzzles`;
@@ -46,7 +46,9 @@ export async function compilePuzzle(project: Project){
 export async function testPuzzle(project: Project){
     const challengeName = project.challenge.split('%')[1].toLowerCase();
     const puzzlePath = PUZZLES_DIR+`/${challengeName}`;
+    console.log(puzzlePath)
     const projectPath = await assemblePuzzle(project, challengeName, TEMP_DIR)
+    transferChallengeTests(project.templates, puzzlePath, projectPath)
     transferChallengeToml(puzzlePath, projectPath);
     const testResult = await testPackage(projectPath);
     return testResult;

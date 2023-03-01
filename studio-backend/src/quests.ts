@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { getTemplates, transferChallengeToml } from "./challenges";
+import { getTemplates, transferChallengeTests, transferChallengeToml } from "./challenges";
 import { compile, testPackage } from "./compile";
 import { makeRandString } from "./helpers";
 import { Project, Template } from "./types";
@@ -29,28 +29,12 @@ export function assembleQuest(templates: Template[], questName: string, questDir
     fs.writeFileSync(tempDir+`/sources/${questName}.move`, assembled)
 }   
 
-export function transferQuestTests(templates: Template[], questDir: string, tempDir: string){
-    const questTests = fs.readdirSync(questDir+"/tests");
-    const tempNames = templates.map((t) => t.name.slice(0, t.name.length-5));
-
-    if(!fs.existsSync(tempDir+"/sources")){
-        fs.mkdirSync(tempDir+"/sources/", {recursive: true})
-    }
-
-    for(const name of tempNames){
-        const testName = `${name}_test.move`
-        if(questTests.includes(testName)){
-            fs.copyFileSync(questDir+`/tests/${testName}`, tempDir+`/sources/${testName}`);
-        }
-    }
-}
-
 export async function compileQuest(project: Project){
     const questName = project.challenge.split('%')[1].toLowerCase();
     const questDir = QUEST_DIR+`/${questName}`;
     const projectDir = TEMP_DIR+`/${questName + makeRandString(20)}`;
     assembleQuest(project.templates, questName, questDir, projectDir); 
-    transferQuestTests(project.templates, questDir, projectDir);
+    transferChallengeTests(project.templates, questDir, projectDir);
     transferChallengeToml(questDir, projectDir);
     const compileResult = await compile(questName, projectDir);
     return compileResult;
@@ -61,7 +45,7 @@ export async function testQuest(project: Project){
     const questDir = QUEST_DIR+`/${questName}`;
     const projectDir = TEMP_DIR+`/${questName + makeRandString(20)}`;
     assembleQuest(project.templates, questName, questDir, projectDir); 
-    transferQuestTests(project.templates, questDir, projectDir);
+    transferChallengeTests(project.templates, questDir, projectDir);
     transferChallengeToml(questDir, projectDir);
     const testResult = await testPackage(projectDir);
     return testResult;

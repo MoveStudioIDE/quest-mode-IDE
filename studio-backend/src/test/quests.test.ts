@@ -1,6 +1,5 @@
 import * as fs from "fs";
-import { getChallengDir, getTemplates, transferChallengeToml } from "../challenges"
-import { assembleQuest, compileQuest, transferQuestTests } from "../quests";
+import { assembleQuest, compileQuest } from "../quests";
 
 describe("Tests quest functions", () => {
 
